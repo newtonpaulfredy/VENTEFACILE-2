@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VENTEFACILE – Gestion de commerce</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="theme-color" content="#14213d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="VENTEFACILE">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<script>try{var t=localStorage.getItem('vf_theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<style>
+:root{--ink:#14213d;--txt:#14213d;--bg:#eceff3;--card:#fff;--mut:#5b6577;--line:#d9dee6;--mango:#f4a01c;--leaf:#1f7a4d;--tomato:#c8412b;--soft:#f6f7f9;--note:#fff6e3;--noteb:#f1d9a6;--hover:#fff6e3;--tagok:#e3f3ea;--tagokc:#1f7a4d;--taglow:#fbe5e0;--taglowc:#c8412b;--bar:#14213d;--btn:#14213d;--navbg:#14213d;--navon:#fff;--navonc:#14213d;--tbg:#14213d;--tfg:#fff;--inbg:#fff;color-scheme:light}
+:root[data-theme=dark]{--txt:#e8edf7;--bg:#0c1322;--card:#16213a;--mut:#9aa8c2;--line:#2a3a5c;--soft:#1c2946;--note:#2b2412;--noteb:#5b4a1f;--hover:#1f2d4d;--tagok:#173a2b;--tagokc:#7ee0ab;--taglow:#4a2620;--taglowc:#ff9d8a;--bar:#7f9be0;--btn:#2f4a85;--navbg:#08101e;--navon:#16213a;--navonc:#fff;--tbg:#e8edf7;--tfg:#0c1322;--inbg:#0f1a30;color-scheme:dark}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]):not([data-theme=dark]){--txt:#e8edf7;--bg:#0c1322;--card:#16213a;--mut:#9aa8c2;--line:#2a3a5c;--soft:#1c2946;--note:#2b2412;--noteb:#5b4a1f;--hover:#1f2d4d;--tagok:#173a2b;--tagokc:#7ee0ab;--taglow:#4a2620;--taglowc:#ff9d8a;--bar:#7f9be0;--btn:#2f4a85;--navbg:#08101e;--navon:#16213a;--navonc:#fff;--tbg:#e8edf7;--tfg:#0c1322;--inbg:#0f1a30;color-scheme:dark}}
+*{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px)}
+[hidden]{display:none!important}
+body{margin:0;font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.45}
+:focus-visible{outline:3px solid var(--mango);outline-offset:2px}
+#nav{position:fixed;z-index:5;left:0;right:0;bottom:0;display:flex;background:var(--navbg);padding-bottom:env(safe-area-inset-bottom,0)}
+#nav button{flex:1;background:none;border:0;color:#aab4c8;padding:.6rem .2rem;font:inherit;font-size:.75rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.1rem}
+#nav button span{font-size:1.3rem}
+#nav button.on{color:#fff;box-shadow:inset 0 3px var(--mango)}
+.brand{display:none}
+main{padding:1rem 1rem 6rem;max-width:960px;margin:0 auto}
+main.full{margin-left:auto!important;margin-right:auto!important;max-width:520px!important}
+.top{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem}
+.top img{width:44px;height:44px;border-radius:12px;flex:none}
+.top .tt{min-width:0;flex:1}
+.top h1{font-size:1.2rem;margin:0;overflow-wrap:break-word;line-height:1.2}
+.top p{margin:0;font-size:.78rem;color:var(--mut)}
+.chip{font-size:1.1rem;flex:none}
+h2{font-size:1.05rem;margin:1.4rem 0 .6rem}
+.mut{color:var(--mut);font-size:.85rem}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.stat{border-radius:16px;padding:1rem;background:var(--card);border:1px solid var(--line)}
+.stat b{display:block;font-size:1.35rem;margin-top:.2rem}
+.stat small{font-size:.78rem;opacity:.85}
+.stat.gain{background:var(--leaf);color:#fff;border-color:var(--leaf)}
+.stat.due{background:var(--mango);border-color:var(--mango);color:#14213d}
+.stat.neg{background:var(--tomato);border-color:var(--tomato);color:#fff}
+.stat.wide{grid-column:1/-1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.9rem 1rem}
+.row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.row.sp{justify-content:space-between}
+.item{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.75rem 0;border-bottom:1px solid var(--line)}
+.item:last-child{border:0}
+.item b{display:block}
+.btn{border:0;border-radius:10px;padding:.65rem 1rem;font:inherit;font-weight:700;cursor:pointer;background:var(--btn);color:#fff;text-decoration:none;display:inline-block}
+.btn.alt{background:var(--mango);color:#14213d}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--txt)}
+.btn.red{background:var(--tomato);color:#fff}
+.btn.sm{padding:.4rem .7rem;font-size:.82rem}
+.btn.full{width:100%;padding:.95rem;text-align:center;margin-top:.6rem}
+.tag{font-size:.75rem;font-weight:700;border-radius:99px;padding:.15rem .6rem;background:var(--tagok);color:var(--tagokc)}
+.tag.low{background:var(--taglow);color:var(--taglowc)}
+.bars{display:flex;align-items:flex-end;gap:.5rem;height:130px;padding-top:.5rem}
+.bars div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-size:.7rem;color:var(--mut)}
+.bars i{display:block;width:100%;background:var(--bar);border-radius:6px 6px 0 0;min-height:3px}
+.bars div:last-child i{background:var(--mango)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.7rem}
+.tile{text-align:left;font:inherit;cursor:pointer;background:var(--card);border:2px dashed var(--txt);border-radius:6px 18px 6px 18px;padding:.9rem;color:var(--txt)}
+.tile:hover:not(:disabled){background:var(--hover)}
+.tile:disabled{opacity:.45;cursor:not-allowed;border-color:var(--line)}
+.tile strong{display:block;font-size:1.05rem}
+.tile em{display:block;font-style:normal;font-size:1.25rem;font-weight:800;margin:.3rem 0}
+dialog{border:0;border-radius:18px;padding:1.2rem;width:min(92vw,440px);max-height:90vh;overflow:auto;color:var(--txt);background:var(--card)}
+dialog::backdrop{background:rgba(8,16,30,.65)}
+dialog h3{margin:0 0 .3rem}
+.fld{display:block;font-size:.85rem;font-weight:700;margin:.8rem 0}
+.in{display:block;width:100%;margin-top:.25rem;padding:.7rem;border:1px solid var(--line);border-radius:10px;font:inherit;background:var(--inbg);color:var(--txt)}
+textarea.in{resize:vertical}
+.seg{display:flex;gap:.5rem}
+.seg label{flex:1;border:1px solid var(--line);border-radius:10px;padding:.6rem;margin:.5rem 0;font-weight:700}
+.tot{font-weight:800;margin:.6rem 0}
+.err{color:var(--taglowc);font-weight:700;min-height:1.2em;margin:.2rem 0}
+#toast{position:fixed;left:50%;bottom:5.5rem;transform:translateX(-50%);background:var(--tbg);color:var(--tfg);padding:.6rem 1rem;border-radius:99px;font-weight:700;z-index:60;max-width:92vw;text-align:center}
+.empty{text-align:center;color:var(--mut);padding:1.5rem 1rem}
+.setup{text-align:center;padding:1.5rem 0}
+.setup img{width:84px;height:84px;border-radius:20px}
+.setup h1{font-size:1.5rem;margin:.8rem 0 .3rem}
+.setup form{text-align:left;margin-top:1rem}
+.rc{background:var(--soft);border:1px dashed var(--line);border-radius:10px;padding:.8rem;white-space:pre-wrap;font:inherit;font-size:.85rem;margin:.6rem 0}
+ol.st{padding-left:1.2rem;margin:.6rem 0}ol.st li{margin:.5rem 0}
+.note{background:var(--note);border:1px solid var(--noteb);border-radius:10px;padding:.6rem .8rem;font-size:.82rem;margin:.6rem 0}
+.code{font-size:1.5rem;font-weight:800;letter-spacing:.12em;text-align:center;background:var(--soft);border-radius:12px;padding:.9rem;margin:.8rem 0;user-select:all}
+.stars{display:flex;gap:.2rem;margin:.6rem 0}
+.stars button{background:none;border:0;font-size:2rem;cursor:pointer;color:var(--mango);padding:0 .15rem;line-height:1}
+.foot{text-align:center;margin:2.2rem 0 0;color:var(--mut);font-size:.8rem}
+.foot p{margin:0 0 .6rem}
+.foot .row{justify-content:center}
+.late{font-size:.75rem;font-weight:700;color:var(--taglowc)}
+#lock{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.lk{text-align:center;padding:2rem;width:min(92vw,340px)}
+.lk img{width:72px;height:72px;border-radius:18px}
+.pin{text-align:center;font-size:1.6rem;letter-spacing:.6rem}
+#guide{position:fixed;inset:0;z-index:30;background:#14213d;color:#fff;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+.gtop{display:flex;justify-content:space-between;align-items:center;padding:.7rem 1rem}
+.gtop b{font-size:.9rem}
+.gx{background:rgba(255,255,255,.14);color:#fff;border:0;border-radius:99px;padding:.5rem 1rem;font:inherit;font-weight:700;cursor:pointer}
+.gx:disabled{opacity:.35;cursor:default}
+.gsl{flex:1;min-height:0;display:flex;flex-direction:column;gap:1rem;padding:0 1.2rem;overflow:auto;align-items:center}
+.gsl img{flex:none;height:min(50vh,460px);max-width:100%;width:auto;object-fit:contain;border-radius:22px;border:4px solid rgba(255,255,255,.25);background:#fff}
+.gtx{max-width:460px;width:100%;text-align:left}
+.gtx h2{margin:0 0 .5rem;font-size:1.35rem}
+.gtx p{margin:.35rem 0;font-size:1rem;color:#e4e9f2}
+.gnav{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.8rem 1rem 1rem}
+.dots{display:flex;gap:.4rem;align-items:center}
+.dots i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35)}
+.dots i.on{background:var(--mango);width:22px;border-radius:5px}
+.prog{height:10px;background:var(--soft);border-radius:99px;margin:.5rem 0;overflow:hidden}.prog i{display:block;height:100%;background:var(--leaf);border-radius:99px}
+.tundo{margin-left:.6rem;background:var(--mango);color:#14213d;border:0;border-radius:99px;padding:.2rem .8rem;font:inherit;font-weight:700;cursor:pointer}
+.lnk{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--txt);text-decoration:underline dotted;cursor:pointer;text-align:left}
+select.in{appearance:auto}
+.bars.an div:last-child i{background:var(--bar)}
+.ym{display:flex;align-items:center;justify-content:center;gap:1rem;margin:.8rem 0}.ym b{font-size:1.3rem}
+@media(max-width:420px){#nav button{font-size:.66rem}}
+@media(min-width:760px){
+ #nav{top:0;right:auto;bottom:0;align-content:flex-start;width:200px;flex-direction:column;padding:1rem .8rem;gap:.3rem}
+ #nav button{flex:none;flex-direction:row;gap:.7rem;font-size:.95rem;padding:.7rem .9rem;border-radius:12px;justify-content:flex-start}
+ #nav button.on{background:var(--navon);color:var(--navonc);box-shadow:none}
+ .brand{display:flex;align-items:center;gap:.6rem;color:#fff;font-weight:800;margin:0 0 1rem .3rem}
+ .brand img{width:34px;height:34px;border-radius:9px}
+ main{margin-left:200px;max-width:none;padding:1.5rem 2rem 2rem}
+ .stats{grid-template-columns:repeat(3,1fr)}.stat.wide{grid-column:auto}
+ .stats.four{grid-template-columns:repeat(4,1fr)}
+ #toast{bottom:1.5rem}
+ .gsl{flex-direction:row;justify-content:center;gap:2.5rem}.gsl img{height:min(68vh,560px)}.gtx{max-width:420px}.gtx h2{font-size:1.7rem}.gtx p{font-size:1.1rem}
+}
+@media print{#nav,.noprint,#toast,#guide,#lock,.foot{display:none!important}main{margin:0!important;padding:0!important}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<nav id="nav" aria-label="Navigation" hidden></nav>
+<main id="main"></main>
+<dialog id="dlg"></dialog>
+<div id="toast" hidden></div>
+<div id="guide" hidden role="dialog" aria-modal="true" aria-label="Guide d’utilisation"></div>
+<div id="lock" hidden role="dialog" aria-modal="true" aria-label="Verrouillage"></div>
+<script>
+/* ===== CONFIGURATION (à remplir une seule fois avant de publier) ===== */
+const SYNC_URL='https://ventefaciles-b0213-default-rtdb.firebaseio.com';                       // adresse du serveur de synchronisation, ex. https://mon-projet-default-rtdb.firebaseio.com (voir GUIDE-SYNCHRONISATION.txt)
+const CONTACT={email:'officielnewton8@gmail.com',whatsapp:'237692820679'};    // où recevoir les avis (facultatif), ex. whatsapp:'237600000000'
+/* ===================================================================== */
+const DEMO_MODE=false,PWA=true,VER='5.0',KEY='ventefacile_v4',OLD='ventefacile_v3',TKEY='vf_theme';
+const $=s=>document.querySelector(s),dlg=$('#dlg');
+const COLL=['produits','mouv','ventes','paiements','dep','tels'];
+const SUB=!!(window.crypto&&window.crypto.subtle);
+const rnd=()=>{const a=new Uint32Array(2);crypto.getRandomValues(a);return a[0].toString(36)+a[1].toString(36)};
+const uid=()=>Date.now().toString(36)+rnd().slice(0,6);
+const NEW=()=>({v:4,dev:uid(),setup:false,cfg:{boutique:'',gerante:'',tel:'',seuil:5,rel:7,obj:0,u:0},produits:[],mouv:[],ventes:[],paiements:[],dep:[],tels:[],sync:{code:'',url:'',last:0,err:''},guideVu:false,pin:'',avisQ:[]});
+let S=null,tab='home',per=7,evt=null,IX=null,HC=null,syncT=null,KC=null,busy=false,hiddenAt=0,stars=0;
+
+/* ---------- Données : chargement, sauvegarde, migration ---------- */
+function fill(d){const n=NEW();Object.assign(n,d);n.sync=Object.assign(NEW().sync,d.sync||{});n.cfg=Object.assign(NEW().cfg,d.cfg||{});COLL.forEach(c=>{if(!Array.isArray(n[c]))n[c]=[]});if(!Array.isArray(n.avisQ))n.avisQ=[];return n}
+function hexs(s){return [...new TextEncoder().encode(s)].map(b=>b.toString(16).padStart(2,'0')).join('')}
+function migrate3(o){
+ const n=NEW(),now=Date.now();n.setup=!!o.setup;n.guideVu=!!o.guideVu;
+ n.cfg={boutique:o.boutique||'',gerante:o.gerante||'',tel:o.tel||'',seuil:o.seuil>=0?o.seuil:5,u:now};
+ const sold={};(o.ventes||[]).forEach(v=>{sold[v.pid]=(sold[v.pid]||0)+v.q});
+ (o.produits||[]).forEach(p=>{const id='p'+p.id;n.produits.push({id,nom:p.nom,achat:p.achat,prix:p.prix,u:now});n.mouv.push({id:'m'+p.id,pid:id,q:p.stock+(sold[p.id]||0),type:'init',date:day(),ts:now,u:now})});
+ (o.ventes||[]).forEach((v,i)=>n.ventes.push({id:'v'+v.id,ts:now-1e6+i,date:v.date,pid:'p'+v.pid,nom:v.nom,q:v.q,prix:v.prix,achat:v.achat,tot:v.tot,client:v.client||'',ac:v.recu,u:now}));
+ (o.dep||[]).forEach(x=>n.dep.push({id:'d'+x.id,date:x.date,nom:x.nom,m:x.m,u:now}));
+ Object.keys(o.tels||{}).forEach(k=>n.tels.push({id:hexs(k),k,t:o.tels[k],u:now}));
+ return n}
+function loadLS(){
+ try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.produits)return fill(d)}catch(e){}
+ try{const o=JSON.parse(localStorage.getItem(OLD));if(o&&o.produits)return migrate3(o)}catch(e){}
+ return null}
+/* Les données sont gardées dans IndexedDB (plusieurs centaines de Mo possibles : 10 ans de ventes et plus) ; localStorage ne sert que de secours. */
+let idbDb=null,useIDB=true,saveT=null;
+function idb(){if(idbDb)return Promise.resolve(idbDb);return new Promise((res,rej)=>{try{const r=indexedDB.open('ventefacile',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>{idbDb=r.result;idbDb.onversionchange=()=>{idbDb.close();idbDb=null};res(idbDb)};r.onerror=()=>rej(r.error||'idb');r.onblocked=()=>rej('blocked')}catch(e){rej(e)}})}
+const kvGet=k=>idb().then(db=>new Promise((res,rej)=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}));
+const kvSet=(k,v)=>idb().then(db=>new Promise((res,rej)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>res();t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)}));
+async function loadAny(){
+ if(window.indexedDB){try{const d=await kvGet('state');if(d&&d.produits)return fill(d)}catch(e){useIDB=false}}else useIDB=false;
+ const n=loadLS();
+ if(n&&useIDB){try{await kvSet('state',n);try{localStorage.removeItem(KEY)}catch(e){}}catch(e){useIDB=false}}
+ return n||NEW()}
+async function flushSave(){
+ clearTimeout(saveT);saveT=null;if(!S)return;
+ if(useIDB){try{await kvSet('state',S);return}catch(e){useIDB=false}}
+ try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Sauvegarde impossible sur ce navigateur')}}
+function save(quiet){IX=null;HC=null;clearTimeout(saveT);saveT=setTimeout(flushSave,250);if(!quiet)schedSync()}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>Math.round(n).toLocaleString('fr-FR').replace(/[  ]/g,' ')+' FCFA';
+const day=d=>{d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const sum=(a,f)=>a.reduce((x,y)=>x+f(y),0);
+const key=c=>c.trim().toLowerCase();
+const enc=x=>encodeURIComponent(x).replace(/'/g,'%27');
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}},lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+const daysSince=d=>Math.round((new Date(day())-new Date(d))/864e5);
+const fmtD=d=>d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4);
+const MOIS=i=>{const m=new Date(2000,i,1).toLocaleDateString('fr-FR',{month:'long'});return m[0].toUpperCase()+m.slice(1)};
+function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2800)}
+function undoToast(msg,c,id){const t=$('#toast');t.innerHTML=esc(msg)+' <button class="tundo" onclick="undoDel(\''+c+'\',\''+id+'\')">Annuler</button>';t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,8000)}
+function undoDel(c,id){restoreRec(c,id,true);$('#toast').hidden=true}
+function go(t){tab=t;render();scrollTo(0,0)}
+function waurl(tel,msg){const n=(tel||'').replace(/\D/g,'');return (n?'https://wa.me/'+(n.length===9?'237'+n:n):'https://wa.me/')+'?text='+encodeURIComponent(msg)}
+const B=()=>S.cfg.boutique;
+
+/* Stock, crédits et bénéfice sont CALCULÉS à partir des enregistrements : deux appareils peuvent donc fusionner sans conflit */
+function ix(){
+ if(IX)return IX;const st={},pd={},vm={};
+ S.mouv.forEach(m=>{if(!m.x)st[m.pid]=(st[m.pid]||0)+m.q});
+ S.ventes.forEach(v=>{vm[v.id]=v;if(!v.x)st[v.pid]=(st[v.pid]||0)-v.q});
+ S.paiements.forEach(p=>{const v=vm[p.vid];if(!p.x&&v&&!v.x)pd[p.vid]=(pd[p.vid]||0)+p.m});
+ return IX={st,pd,vm}}
+const stock=pid=>ix().st[pid]||0;
+const paid=v=>v.ac+(ix().pd[v.id]||0);
+const LV=()=>S.ventes.filter(v=>!v.x);
+const PR=()=>S.produits.filter(p=>!p.x).sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
+function gainsIn(f,t){
+ let g=0;const ok=d=>d>=f&&(!t||d<=t),vm=ix().vm;
+ LV().forEach(v=>{if(v.tot>0&&ok(v.date))g+=(v.prix-v.achat)*v.q*v.ac/v.tot});
+ S.paiements.forEach(p=>{const v=vm[p.vid];if(p.x||!v||v.x||!(v.tot>0)||!ok(p.date))return;g+=(v.prix-v.achat)*v.q*p.m/v.tot});
+ return g}
+function dettes(){
+ const m={},t0=new Date(day());
+ LV().forEach(v=>{if(!v.client)return;const r=v.tot-paid(v);if(r<=0.5)return;const k=key(v.client),c=m[k]=m[k]||{k,nom:v.client,reste:0,depuis:v.date};c.reste+=r;if(v.date<c.depuis)c.depuis=v.date});
+ return Object.values(m).map(c=>(c.jours=Math.max(0,Math.round((t0-new Date(c.depuis))/864e5)),c)).sort((a,b)=>b.reste-a.reste)}
+const getTel=k=>{const t=S.tels.find(x=>x.k===k&&!x.x);return t?t.t:''};
+function setTel(k,t){const e=S.tels.find(x=>x.k===k),now=Date.now();if(e){e.t=t;e.u=now}else S.tels.push({id:hexs(k),k,t,u:now})}
+
+/* ---------- Rappels de crédit ---------- */
+const relOf=k=>{const t=S.tels.find(x=>x.k===k&&!x.x);return t&&t.r||''};
+function markRel(k){const e=S.tels.find(x=>x.k===k),now=Date.now();if(e){e.r=day();e.u=now;delete e.x}else S.tels.push({id:hexs(k),k,t:'',r:day(),u:now});save()}
+function aRelancer(){const n=S.cfg.rel;if(!(n>0))return[];return dettes().filter(c=>c.jours>=n&&(!relOf(c.k)||daysSince(relOf(c.k))>=n))}
+const relMsg=c=>`Bonjour ${c.nom}, petit rappel : il reste ${fmt(c.reste)} à régler à ${B()}${S.cfg.tel?' ('+S.cfg.tel+')':''}. Merci !`;
+let RLIST=[],ri=0;
+function relanceDlg(i){
+ if(i===undefined){RLIST=aRelancer();ri=0}else ri=i;
+ if(!RLIST.length||ri>=RLIST.length){if(dlg.open)dlg.close();render();if(RLIST.length)toast('Rappels terminés ✅');return}
+ const c=RLIST[ri];
+ dlg.innerHTML=`<h3>🔔 Rappel ${ri+1} / ${RLIST.length}</h3><p><b>${esc(c.nom)}</b> doit <b>${fmt(c.reste)}</b> depuis ${c.jours} jours.</p><pre class="rc">${esc(relMsg(c))}</pre>${getTel(c.k)?'':'<p class="note">Aucun numéro enregistré : WhatsApp vous laissera choisir le contact. Ajoutez le numéro dans la fiche du client (onglet Crédits).</p>'}
+ <div class="row sp"><button class="btn ghost" onclick="relanceDlg(${ri+1})">Passer</button><a class="btn alt" target="_blank" rel="noopener" href="${waurl(getTel(c.k),relMsg(c))}" onclick="relDone('${enc(c.k)}')">Envoyer sur WhatsApp</a></div>
+ <div class="row" style="justify-content:flex-end;margin-top:.6rem"><button class="btn ghost sm" onclick="dlg.close();render()">Fermer</button></div>`;
+ if(!dlg.open)dlg.showModal()}
+function relDone(k){markRel(decodeURIComponent(k));setTimeout(()=>relanceDlg(ri+1),500)}
+function relMark(k){markRel(decodeURIComponent(k));setTimeout(render,500)}
+function notifier(){
+ if(!S||!S.setup||!('Notification' in window)||Notification.permission!=='granted')return;
+ const RL=aRelancer();if(!RL.length||lsGet('vf_notif')===day())return;lsSet('vf_notif',day());
+ const body=RL.length+' client(s) à relancer : '+RL.slice(0,3).map(c=>c.nom).join(', ')+(RL.length>3?'…':'');
+ try{if(PWA&&navigator.serviceWorker&&/^https?:$/.test(location.protocol)){navigator.serviceWorker.ready.then(r=>r.showNotification('VENTEFACILE · rappel de crédits',{body,icon:'icon-192.png',badge:'icon-192.png'}))}else new Notification('VENTEFACILE · rappel de crédits',{body,icon:'icon-192.png'})}catch(e){}}
+async function notifOn(){
+ if(!('Notification' in window)){toast('Notifications non disponibles sur ce navigateur');return}
+ let r='denied';try{r=await Notification.requestPermission()}catch(e){}
+ render();if(r==='granted'){toast('Notifications activées');notifier()}else toast('Notifications refusées')}
+
+/* ---------- Thème ---------- */
+const theme=()=>{try{return localStorage.getItem(TKEY)||'auto'}catch(e){return'auto'}};
+function applyTheme(){
+ const t=theme(),r=document.documentElement;t==='auto'?r.removeAttribute('data-theme'):r.setAttribute('data-theme',t);
+ const dark=t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches),m=document.querySelector('meta[name=theme-color]');if(m)m.content=dark?'#08101e':'#14213d'}
+function setTheme(t){try{t==='auto'?localStorage.removeItem(TKEY):localStorage.setItem(TKEY,t)}catch(e){}applyTheme();if(S)render()}
+function cycleTheme(){setTheme({auto:'light',light:'dark',dark:'auto'}[theme()])}
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme)}catch(e){}
+
+/* ---------- Installation (PWA) ---------- */
+const standalone=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();evt=e;try{if(S)render()}catch(x){}});
+addEventListener('appinstalled',()=>{evt=null;toast('Application installée !');try{render()}catch(x){}});
+function installBtn(cls,lab){return standalone()?'':`<button class="btn alt ${cls||''}" onclick="installApp()">${lab||'📲 Installer l’application'}</button>`}
+async function installApp(){
+ if(evt){const e=evt;evt=null;try{e.prompt();await e.userChoice}catch(x){}render();return}
+ aide();
+}
+function aide(){
+ const u=navigator.userAgent,ios=/iPad|iPhone|iPod/.test(u)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),and=/Android/i.test(u),
+ saf=/safari/i.test(u)&&!/chrome|crios|fxios|edgios|edg\/|android|opr\//i.test(u),mac=/Macintosh/.test(u)&&!ios,ff=/firefox|fxios/i.test(u);
+ let t;
+ if(ios&&saf)t=['Touchez le bouton <b>Partager</b> (le carré avec une flèche vers le haut), en bas de l’écran.','Faites défiler et touchez <b>« Sur l’écran d’accueil »</b>.','Touchez <b>« Ajouter »</b>. L’icône VENTEFACILE apparaît sur votre téléphone.'];
+ else if(ios)t=['Sur iPhone et iPad, l’installation se fait depuis <b>Safari</b>.','Ouvrez cette même adresse dans Safari.','Touchez <b>Partager</b>, puis <b>« Sur l’écran d’accueil »</b>, puis <b>« Ajouter »</b>.'];
+ else if(and)t=['Touchez le menu <b>⋮</b> en haut à droite du navigateur.','Touchez <b>« Installer l’application »</b> (ou « Ajouter à l’écran d’accueil »).','Confirmez. L’icône VENTEFACILE apparaît sur votre téléphone.'];
+ else if(mac&&saf)t=['Dans le menu, choisissez <b>Fichier → Ajouter au Dock</b>.'];
+ else if(ff)t=['Firefox n’installe pas les applications sur ordinateur.','Ouvrez cette adresse dans <b>Chrome</b> ou <b>Edge</b> pour installer VENTEFACILE.'];
+ else t=['Cliquez sur l’icône d’installation à droite de la barre d’adresse (un écran avec une flèche).','Ou ouvrez le menu <b>⋮</b> puis <b>« Installer VENTEFACILE »</b>.','Confirmez. L’application s’ouvre dans sa propre fenêtre.'];
+ const web=DEMO_MODE||location.protocol==='file:';
+ dlg.innerHTML=`<h3>📲 Installer VENTEFACILE</h3><ol class="st">${t.map(x=>'<li>'+x+'</li>').join('')}</ol>
+ ${web?'<p class="note">Cette page est un aperçu ou un fichier local. Pour proposer l’installation, l’application doit être publiée sur internet (voir GUIDE-HEBERGEMENT.txt) puis ouverte depuis son adresse https.</p>':''}
+ <div class="row sp"><span class="mut">Fonctionne aussi sans connexion une fois installée.</span><button class="btn alt" onclick="dlg.close()">Compris</button></div>`;
+ dlg.showModal();
+}
+
+/* ---------- Affichage général ---------- */
+function render(){
+ const ok=S.setup;$('#nav').hidden=!ok;$('#main').className=ok?'':'full';
+ if(!ok){$('#main').innerHTML=vSetup()+foot();return}
+ const T=[['home','📊','Accueil'],['sell','🛒','Vendre'],['prod','📦','Produits'],['cred','💳','Crédits'],['bil','📈','Bilan'],['hist','🗂️','Historique']];
+ $('#nav').innerHTML='<div class="brand"><img src="icon.svg" alt="">VENTEFACILE</div>'+T.map(t=>`<button class="${t[0]===tab?'on':''}" onclick="go('${t[0]}')" ${t[0]===tab?'aria-current="page"':''}><span>${t[1]}</span>${t[2]}</button>`).join('');
+ $('#main').innerHTML=entete()+({home:vHome,sell:vSell,prod:vProd,cred:vCred,bil:vBil,hist:vHist,trash:vTrash,set:vSet})[tab]()+foot();
+}
+function entete(){return `<div class="top"><img src="icon.svg" alt="Logo VENTEFACILE"><div class="tt"><h1>${esc(B())}</h1><p>VENTEFACILE${S.cfg.gerante?' · '+esc(S.cfg.gerante):''}</p></div>${syncOn()?`<span id="chip" class="chip" role="img" aria-label="Synchronisation">${chipTxt()}</span>`:''}${installBtn('sm','📲 Installer')}<button class="btn ghost sm" aria-label="Paramètres" onclick="go('set')">⚙️</button></div>`}
+function foot(){const T={auto:'Auto',light:'Clair',dark:'Sombre'}[theme()];return `<footer class="foot noprint"><p>VENTEFACILE · conçu par <b>NEWTON DESIGN</b> · v${VER}</p><div class="row"><button class="btn ghost sm" onclick="avisDlg()">⭐ Donner mon avis</button><button class="btn ghost sm" onclick="cycleTheme()">🌓 Thème : ${T}</button></div></footer>`}
+
+/* ---------- Première ouverture ---------- */
+function vSetup(){
+ return `<div class="setup"><img src="icon.svg" alt="Logo VENTEFACILE"><h1>Bienvenue sur VENTEFACILE</h1>
+ <p class="mut">Gérez vos ventes, vos crédits clients et votre vrai bénéfice. Commencez par donner un nom à votre commerce.</p>
+ <form onsubmit="return startApp(event)">
+ <label class="fld">Nom de votre commerce ou boutique *<input class="in" id="sb" type="text" required maxlength="60" autocomplete="off" placeholder="Ex. : Boutique Espérance"></label>
+ <label class="fld">Votre nom (facultatif)<input class="in" id="sg" type="text" maxlength="60" autocomplete="off"></label>
+ <label class="fld">Téléphone (facultatif)<input class="in" id="st" type="tel" inputmode="tel" maxlength="20"></label>
+ <p class="err" id="err" role="alert"></p>
+ <button class="btn alt full" type="submit">Commencer</button></form>
+ ${base()&&SUB?'<button class="btn ghost full" onclick="joinDlg()">🔑 Rejoindre mon commerce avec un code</button>':''}
+ ${installBtn('full')}
+ <button class="btn ghost full" onclick="guide(0)">📖 Comment utiliser l’application ?</button>
+ ${DEMO_MODE?'<button class="btn ghost full" onclick="demoStart()">Essayer avec des exemples</button>':''}
+ <p class="mut" style="margin-top:1rem">Vos données restent sur votre appareil. Aucun compte à créer.</p></div>`;
+}
+function startApp(e){
+ e.preventDefault();const nom=$('#sb').value.trim();
+ if(!nom){$('#err').textContent='Écrivez le nom de votre commerce pour continuer.';return false}
+ S.cfg=Object.assign({},NEW().cfg,{boutique:nom,gerante:$('#sg').value.trim(),tel:$('#st').value.trim(),u:Date.now()});S.setup=true;save();go('home');return false;
+}
+function demoStart(){const n=$('#sb').value.trim();S.cfg.boutique=n||'Ma boutique';S.cfg.gerante=$('#sg').value.trim();S.cfg.u=Date.now();S.setup=true;loadExamples(true)}
+
+/* ---------- Accueil ---------- */
+function vHome(){
+ const d=day(),vt=LV().filter(v=>v.date===d),ca=sum(vt,v=>v.tot),cr=sum(vt.filter(v=>v.client),v=>Math.max(0,v.tot-paid(v)));
+ const gain=gainsIn(d,d),D=dettes(),due=sum(D,x=>x.reste),late=D.filter(x=>x.jours>=7),RL=aRelancer();
+ const days=[...Array(7)].map((_,i)=>{const t=new Date();t.setDate(t.getDate()-(6-i));const k=day(t);return{l:t.toLocaleDateString('fr-FR',{weekday:'short'}),v:sum(LV().filter(v=>v.date===k),v=>v.tot)}});
+ const mx=Math.max(1,...days.map(x=>x.v)),low=PR().filter(p=>stock(p.id)<=S.cfg.seuil);
+ const aideCard=(!S.guideVu&&!LV().length)?`<div class="card row sp" style="margin-bottom:.9rem"><div><b>Nouveau ici ?</b><span class="mut" style="display:block">Voyez comment ça marche en ${GUIDE.length} écrans.</span></div><button class="btn alt sm" onclick="guide(0)">📖 Voir le guide</button></div>`:'';
+ const start=!PR().length?`<div class="card" style="margin-bottom:.9rem"><b>Pour commencer</b><ol class="st"><li>Ajoutez vos produits avec leur prix d’achat et de vente.</li><li>Touchez « Faire une vente » à chaque vente.</li><li>Suivez vos crédits et votre bénéfice ici.</li></ol><button class="btn alt full" onclick="go('prod');openProd()">+ Ajouter mon premier produit</button></div>`:'';
+ const rapp=RL.length?`<div class="card note" style="margin-bottom:.9rem"><div class="row sp"><div><b>🔔 ${RL.length} client(s) à relancer</b><span class="mut" style="display:block">Ils vous doivent ${fmt(sum(RL,x=>x.reste))} depuis ${S.cfg.rel} jours ou plus.</span></div><button class="btn alt sm" onclick="relanceDlg()">Relancer</button></div></div>`:'';
+ const bk=(!DEMO_MODE&&!syncOn()&&LV().length>=10&&(!lsGet('vf_bk')||daysSince(lsGet('vf_bk'))>=14))?`<div class="card note" style="margin-bottom:.9rem"><div class="row sp"><div><b>💾 Pensez à sauvegarder</b><span class="mut" style="display:block">Téléchargez une copie de vos données.</span></div><button class="btn alt sm" onclick="exportD()">Sauvegarder</button></div></div>`:'';
+ const mo=day().slice(0,7),mca=sum(LV().filter(v=>v.date.slice(0,7)===mo),v=>v.tot),O=S.cfg.obj;
+ const ob=O>0?`<div class="card" style="margin-top:.9rem"><div class="row sp"><b>🎯 Objectif de ${MOIS(new Date().getMonth())}</b><span class="mut">${fmt(mca)} / ${fmt(O)}</span></div><div class="prog"><i style="width:${Math.min(100,mca/O*100)}%"></i></div><span class="mut">${mca>=O?'Objectif atteint, bravo ! 🎉':Math.round(mca/O*100)+' % atteint · il reste '+fmt(O-mca)}</span></div>`:'';
+ const recent=LV().sort((a,b)=>b.ts-a.ts).slice(0,6);
+ return aideCard+start+rapp+bk+`<div class="stats">
+ <div class="stat"><small>Ventes du jour</small><b>${fmt(ca)}</b><small>dont ${fmt(cr)} restent à payer</small></div>
+ <div class="stat gain"><small>Bénéfice réel du jour</small><b>${fmt(gain)}</b><small>argent déjà encaissé</small></div>
+ <div class="stat due wide"><small>Crédits à récupérer</small><b>${fmt(due)}</b><small>${D.length} client(s)${late.length?' · '+late.length+' en retard (7 jours et plus)':''}</small></div></div>${ob}
+ <button class="btn alt full" onclick="go('sell')">🛒 Faire une vente</button>
+ ${low.length?`<h2>⚠️ Stock bas</h2><div class="card">${low.map(p=>`<div class="item"><b>${esc(p.nom)}</b><span class="tag low">${stock(p.id)} restant(s)</span></div>`).join('')}<button class="btn ghost sm" style="margin-top:.6rem" onclick="listeAchat()">📋 Liste à racheter</button></div>`:''}
+ <h2>Ventes des 7 derniers jours</h2><div class="card"><div class="bars">${days.map(x=>`<div title="${fmt(x.v)}"><i style="height:${x.v/mx*100}%"></i>${x.l}</div>`).join('')}</div></div>
+ <h2>Dernières ventes</h2><div class="card">${recent.length?recent.map(v=>`<div class="item"><div><b>${v.q} × ${esc(v.nom)}</b><span class="mut">${v.date}${v.client?' · crédit : '+esc(v.client):''}</span></div><b>${fmt(v.tot)}</b></div>`).join(''):'<p class="empty">Aucune vente pour l’instant. Touchez « Faire une vente ».</p>'}</div>`;
+}
+
+/* ---------- Vendre ---------- */
+function vSell(){
+ const P=PR();
+ if(!P.length)return '<p class="empty">Ajoutez d’abord vos produits dans l’onglet Produits.</p><button class="btn alt full" onclick="go(\'prod\');openProd()">+ Ajouter un produit</button>';
+ return `<h2 style="margin-top:0">Touchez le produit vendu</h2><input class="in" id="srch" type="text" placeholder="🔎 Chercher un produit" oninput="filt()" style="margin-bottom:.7rem"><div class="tiles">${P.map(p=>{const s=stock(p.id);return `<button class="tile" ${s<1?'disabled':''} onclick="openSell('${p.id}')"><strong>${esc(p.nom)}</strong><em>${fmt(p.prix)}</em><span class="mut">${s<1?'Rupture de stock':s+' en stock'}</span></button>`}).join('')}</div>`;
+}
+function filt(){const q=$('#srch').value.toLowerCase();document.querySelectorAll('.tile').forEach(t=>t.hidden=!t.textContent.toLowerCase().includes(q))}
+function openSell(id){
+ const p=S.produits.find(x=>x.id===id),s=stock(id);if(!p||s<1)return;
+ dlg.innerHTML=`<h3>${esc(p.nom)}</h3><p class="mut">${s} en stock · achat ${fmt(p.achat)}</p>
+ <label class="fld">Quantité<input class="in" id="q" type="number" inputmode="numeric" min="1" max="${s}" value="1" oninput="upd('${id}')"></label>
+ <label class="fld">Prix de vente unitaire (FCFA)<input class="in" id="pu" type="number" inputmode="decimal" min="0" value="${p.prix}" oninput="upd('${id}')"></label>
+ <div class="seg"><label><input type="radio" name="m" value="c" checked onchange="upd('${id}')"> Comptant</label><label><input type="radio" name="m" value="k" onchange="upd('${id}')"> À crédit</label></div>
+ <div id="cr" hidden><label class="fld">Nom du client<input class="in" id="cl" type="text" autocomplete="off" list="clients"><datalist id="clients">${[...new Set(LV().map(v=>v.client).filter(Boolean))].map(c=>`<option value="${esc(c)}">`).join('')}</datalist></label><label class="fld">Téléphone du client (facultatif)<input class="in" id="tel" type="tel" inputmode="tel"></label><label class="fld">Avance payée maintenant (FCFA)<input class="in" id="ac" type="number" inputmode="decimal" min="0" value="0"></label></div>
+ <p class="tot" id="tot"></p><p class="err" id="err" role="alert"></p>
+ <div class="row sp"><button class="btn ghost" onclick="dlg.close()">Annuler</button><button class="btn alt" onclick="sell('${id}')">Enregistrer la vente</button></div>`;
+ dlg.showModal();upd(id);
+}
+function upd(id){const p=S.produits.find(x=>x.id===id),q=parseInt($('#q').value)||0,pu=parseFloat($('#pu').value)||0,k=document.querySelector('input[name=m]:checked').value==='k';$('#cr').hidden=!k;$('#tot').textContent='Total : '+fmt(q*pu)+' · gain '+fmt(q*(pu-p.achat))}
+function sell(id){
+ const p=S.produits.find(x=>x.id===id),s=stock(id),q=parseInt($('#q').value),pu=parseFloat($('#pu').value),k=document.querySelector('input[name=m]:checked').value==='k',cl=$('#cl').value.trim(),err=$('#err');
+ if(!(q>=1)||q>s){err.textContent='Quantité impossible : il reste '+s+' en stock.';return}
+ if(!(pu>=0)){err.textContent='Écrivez le prix de vente.';return}
+ const tot=q*pu,ac=k?(parseFloat($('#ac').value)||0):tot;
+ if(k&&!cl){err.textContent='Écrivez le nom du client pour noter le crédit.';return}
+ if(k&&(ac<0||ac>tot)){err.textContent='L’avance doit être entre 0 et '+fmt(tot)+'.';return}
+ const now=Date.now(),v={id:uid(),ts:now,date:day(),pid:id,nom:p.nom,q,prix:pu,achat:p.achat,tot,client:k?cl:'',ac,u:now};
+ S.ventes.push(v);
+ if(k&&$('#tel').value.trim())setTel(key(cl),$('#tel').value.trim());
+ save();render();recuDlg(v);
+}
+function recuDlg(v){
+ const t=v.client?getTel(key(v.client)):'',pd=paid(v);
+ const txt=`🧾 Reçu – ${B()}\n${v.date}\n${v.q} × ${v.nom} à ${fmt(v.prix)}\nTotal : ${fmt(v.tot)}\n`+(v.client?`Client : ${v.client}\nPayé : ${fmt(pd)}\nReste à payer : ${fmt(v.tot-pd)}\n`:'Payé comptant\n')+'Merci de votre confiance !'+(S.cfg.tel?'\n'+S.cfg.tel:'');
+ dlg.innerHTML=`<h3>${v.x?'Vente annulée':'Reçu'} ${v.x?'':'✅'}</h3><pre class="rc">${esc(txt)}</pre>
+ <div class="row sp"><button class="btn ghost" onclick="dlg.close()">Fermer</button><a class="btn alt" target="_blank" rel="noopener" href="${waurl(t,txt)}">Envoyer le reçu</a></div>`;
+ if(!dlg.open)dlg.showModal();
+}
+function recuId(id){const v=S.ventes.find(x=>x.id===id);if(v)recuDlg(v)}
+
+/* ---------- Produits ---------- */
+function vProd(){
+ const P=PR();
+ return `<div class="row sp"><h2 style="margin:0">Mes produits</h2><button class="btn alt sm" onclick="openProd()">+ Nouveau produit</button></div>
+ <div class="row" style="margin:.4rem 0"><button class="btn ghost sm" onclick="listeAchat()">📋 Liste à racheter</button></div>
+ <p class="mut">Valeur du stock (au prix d’achat) : <b>${fmt(sum(P,p=>stock(p.id)*p.achat))}</b></p>
+ <div class="card" style="margin-top:.7rem">${P.length?P.map(p=>{const s=stock(p.id);return `<div class="item"><div><b>${esc(p.nom)}</b><span class="mut">Achat ${fmt(p.achat)} · Vente ${fmt(p.prix)} · Gain ${fmt(p.prix-p.achat)}</span></div>
+ <div class="row"><span class="tag ${s<=S.cfg.seuil?'low':''}">${s}</span><button class="btn ghost sm" onclick="openStock('${p.id}')">+ Stock</button><button class="btn ghost sm" onclick="openProd('${p.id}')">Modifier</button></div></div>`}).join(''):'<p class="empty">Aucun produit. Ajoutez le premier.</p>'}</div>`;
+}
+function openProd(id){
+ const p=S.produits.find(x=>x.id===id),v=p?{nom:p.nom,achat:p.achat,prix:p.prix,stock:stock(id)}:{nom:'',achat:'',prix:'',stock:''};
+ dlg.innerHTML=`<h3>${id?'Modifier':'Nouveau'} produit</h3>
+ <label class="fld">Nom<input class="in" id="pn" type="text" value="${esc(v.nom)}" maxlength="60"></label>
+ <label class="fld">Prix d’achat (FCFA)<input class="in" id="pa" type="number" inputmode="decimal" min="0" value="${v.achat}"></label>
+ <label class="fld">Prix de vente (FCFA)<input class="in" id="pp" type="number" inputmode="decimal" min="0" value="${v.prix}"></label>
+ <label class="fld">Quantité en stock<input class="in" id="ps" type="number" inputmode="numeric" min="0" value="${v.stock}"></label>
+ <p class="err" id="err" role="alert"></p>
+ <div class="row sp">${id?`<button class="btn red" onclick="delProd('${id}')">Supprimer</button>`:'<span></span>'}<span class="row"><button class="btn ghost" onclick="dlg.close()">Annuler</button><button class="btn alt" onclick="saveProd('${id||''}')">Enregistrer</button></span></div>`;
+ dlg.showModal();
+}
+function saveProd(id){
+ const nom=$('#pn').value.trim(),achat=parseFloat($('#pa').value),prix=parseFloat($('#pp').value),st=parseInt($('#ps').value);
+ if(!nom||!(achat>=0)||!(prix>=0)||!(st>=0)){$('#err').textContent='Remplissez le nom, les deux prix et le stock.';return}
+ const now=Date.now();
+ if(id){const p=S.produits.find(x=>x.id===id),delta=st-stock(id);Object.assign(p,{nom,achat,prix,u:now});if(delta)S.mouv.push({id:uid(),pid:id,q:delta,type:'ajust',date:day(),ts:now,u:now})}
+ else{const pid=uid();S.produits.push({id:pid,nom,achat,prix,u:now});if(st>0)S.mouv.push({id:uid(),pid,q:st,type:'init',date:day(),ts:now,u:now})}
+ save();dlg.close();toast('Produit enregistré');render();
+}
+function delProd(id){if(confirm('Supprimer ce produit ? Les ventes déjà faites restent dans l’historique. Il ira dans la corbeille, vous pourrez le récupérer.')){const p=S.produits.find(x=>x.id===id);p.x=true;p.u=Date.now();save();dlg.close();render();undoToast('Produit supprimé','produits',id)}}
+let LAT='';
+function listeAchat(){
+ const low=PR().filter(p=>stock(p.id)<=S.cfg.seuil);if(!low.length){toast('Aucun produit en stock bas');return}
+ LAT=`🛒 Liste à racheter – ${B()}\n`+low.map(p=>`• ${p.nom} (reste ${stock(p.id)})`).join('\n');
+ dlg.innerHTML=`<h3>📋 Liste à racheter</h3><p class="mut">Produits dont le stock est à ${S.cfg.seuil} ou moins.</p><pre class="rc">${esc(LAT)}</pre><div class="row sp"><button class="btn ghost" onclick="dlg.close()">Fermer</button><span class="row"><button class="btn ghost" onclick="copyTxt(LAT,'Liste copiée')">Copier</button><a class="btn alt" target="_blank" rel="noopener" href="${waurl('',LAT)}">WhatsApp</a></span></div>`;
+ dlg.showModal()}
+
+/* ---------- Crédits ---------- */
+function vCred(){
+ const L=dettes(),RL=aRelancer();
+ return `<h2 style="margin-top:0">Qui me doit de l’argent ?</h2>
+ ${RL.length?`<div class="card note" style="margin-bottom:.8rem"><div class="row sp"><span><b>🔔 ${RL.length} à relancer</b></span><button class="btn alt sm" onclick="relanceDlg()">Relancer un par un</button></div></div>`:''}
+ <div class="card">${L.length?L.map(c=>{const r=relOf(c.k);return `<div class="item"><div><b><button class="lnk" onclick="ficheClient('${enc(c.k)}')">${esc(c.nom)}</button></b><span class="mut">Depuis le ${fmtD(c.depuis)}${r?' · dernier rappel '+fmtD(r):''}</span>${c.jours>=7?`<span class="late">⏰ en retard : ${c.jours} jours</span>`:''}</div>
+ <div class="row"><b>${fmt(c.reste)}</b><button class="btn alt sm" onclick="openPay('${enc(c.k)}')">Encaisser</button><a class="btn ghost sm" target="_blank" rel="noopener" href="${waurl(getTel(c.k),relMsg(c))}" onclick="relMark('${enc(c.k)}')">Relancer</a></div></div>`}).join(''):'<p class="empty">Aucun crédit en cours. Bravo !</p>'}</div>`;
+}
+function ficheClient(k){
+ k=decodeURIComponent(k);const vs=LV().filter(v=>v.client&&key(v.client)===k).sort((a,b)=>b.ts-a.ts);if(!vs.length)return;
+ const tot=sum(vs,v=>v.tot),pd=sum(vs,v=>Math.min(v.tot,paid(v)));
+ dlg.innerHTML=`<h3>${esc(vs[0].client)}</h3>
+ <div class="stats" style="margin:.6rem 0"><div class="stat"><small>Total acheté</small><b>${fmt(tot)}</b></div><div class="stat"><small>Déjà payé</small><b>${fmt(pd)}</b></div><div class="stat due wide"><small>Reste à payer</small><b>${fmt(Math.max(0,tot-pd))}</b></div></div>
+ <label class="fld">Téléphone (pour les rappels WhatsApp)<input class="in" id="ct" type="tel" inputmode="tel" value="${esc(getTel(k))}"></label>
+ <div class="card" style="max-height:30vh;overflow:auto">${vs.slice(0,25).map(v=>{const r=v.tot-paid(v);return `<div class="item"><div><b>${v.q} × ${esc(v.nom)}</b><span class="mut">${fmtD(v.date)}</span></div><span class="${r>0.5?'late':'mut'}">${r>0.5?'reste '+fmt(r):'payé ✓'}</span></div>`}).join('')}</div>
+ <div class="row sp" style="margin-top:.8rem"><button class="btn ghost" onclick="dlg.close()">Fermer</button><button class="btn alt" onclick="saveCT('${enc(k)}')">Enregistrer le numéro</button></div>`;
+ dlg.showModal()}
+function saveCT(k){k=decodeURIComponent(k);setTel(k,$('#ct').value.trim());save();dlg.close();toast('Numéro enregistré');render()}
+function openPay(k){
+ k=decodeURIComponent(k);const c=dettes().find(x=>x.k===k);if(!c)return;
+ dlg.innerHTML=`<h3>${esc(c.nom)}</h3><p class="mut">Reste à payer : ${fmt(c.reste)}</p>
+ <label class="fld">Montant reçu (FCFA)<input class="in" id="am" type="number" inputmode="decimal" min="1" max="${Math.round(c.reste)}" value="${Math.round(c.reste)}"></label><p class="err" id="err" role="alert"></p>
+ <div class="row sp"><button class="btn ghost" onclick="dlg.close()">Annuler</button><button class="btn alt" onclick="pay('${enc(k)}')">Enregistrer le paiement</button></div>`;
+ dlg.showModal();
+}
+function pay(k){
+ k=decodeURIComponent(k);const c=dettes().find(x=>x.k===k);let left=parseFloat($('#am').value);
+ if(!(left>0)||left>Math.round(c.reste)){$('#err').textContent='Le montant doit être entre 1 et '+Math.round(c.reste)+' FCFA.';return}
+ const got=left,now=Date.now();let i=0;
+ LV().filter(v=>v.client&&key(v.client)===k&&v.tot-paid(v)>0.5).sort((a,b)=>a.ts-b.ts).forEach(v=>{
+  const a=Math.min(v.tot-paid(v),left);if(a<=0)return;left-=a;S.paiements.push({id:uid(),vid:v.id,m:a,date:day(),ts:now+(i++),u:now})});
+ save();dlg.close();toast('Paiement de '+fmt(got)+' enregistré');render();
+}
+
+/* ---------- Bilan ---------- */
+let yr=new Date().getFullYear();
+function setPer(n){per=n;render()}
+function rng(){const t=new Date();t.setDate(t.getDate()-(per-1));return day(t)}
+const PL={1:'Aujourd’hui',7:'7 jours',30:'30 jours',y:'Année'};
+function perBar(){return `<div class="row noprint">${[1,7,30,'y'].map(n=>`<button class="btn ${per===n?'':'ghost'} sm" onclick="setPer(${typeof n==='string'?"'"+n+"'":n})">${PL[n]}</button>`).join('')}<button class="btn ghost sm" style="margin-left:auto" onclick="print()">🖨️ Imprimer</button></div>`}
+function bilan(){
+ const f=rng(),vt=LV().filter(v=>v.date>=f),ca=sum(vt,v=>v.tot),g=gainsIn(f),dp=S.dep.filter(x=>!x.x&&x.date>=f),de=sum(dp,x=>x.m);
+ return {f,vt,ca,g,dp,de,net:g-de}}
+function topProduits(vt){const agg={};vt.forEach(v=>{const a=agg[v.nom]=agg[v.nom]||{nom:v.nom,q:0,t:0,m:0};a.q+=v.q;a.t+=v.tot;a.m+=(v.prix-v.achat)*v.q});return Object.values(agg).sort((a,c)=>c.q-a.q).slice(0,5)}
+const topHtml=top=>`<div class="card">${top.length?top.map((a,i)=>`<div class="item"><div><b>${i+1}. ${esc(a.nom)}</b><span class="mut">${a.q} vendu(s) · marge ${fmt(a.m)}</span></div><b>${fmt(a.t)}</b></div>`).join(''):'<p class="empty">Pas encore de ventes sur cette période.</p>'}</div>`;
+function vBil(){
+ if(per==='y')return vAnnee();
+ const b=bilan(),top=topProduits(b.vt);
+ return perBar()+`
+ <h2>Bilan : ${PL[per].toLowerCase()}</h2>
+ <div class="stats four"><div class="stat"><small>Ventes (chiffre d’affaires)</small><b>${fmt(b.ca)}</b></div><div class="stat gain"><small>Bénéfice encaissé</small><b>${fmt(b.g)}</b></div><div class="stat"><small>Dépenses</small><b>${fmt(b.de)}</b></div><div class="stat ${b.net>=0?'due':'neg'}"><small>Bénéfice net</small><b>${fmt(b.net)}</b><small>bénéfice − dépenses</small></div></div>
+ <div class="row noprint" style="margin-top:.8rem"><a class="btn ghost sm" target="_blank" rel="noopener" href="${waurl('',`📊 Bilan (${PL[per].toLowerCase()}) – ${B()}\nVentes : ${fmt(b.ca)}\nBénéfice encaissé : ${fmt(b.g)}\nDépenses : ${fmt(b.de)}\nBénéfice net : ${fmt(b.net)}\nCrédits à récupérer : ${fmt(sum(dettes(),x=>x.reste))}`)}">📤 Envoyer le bilan par WhatsApp</a>${DEMO_MODE?'':'<button class="btn ghost sm" onclick="exportCSV(\'per\')">⬇️ Exporter les ventes (CSV)</button>'}</div>
+ <h2>Produits les plus vendus</h2>${topHtml(top)}
+ <div class="row sp"><h2>Dépenses</h2><button class="btn alt sm noprint" onclick="openDep()">+ Dépense</button></div>
+ <div class="card">${b.dp.length?b.dp.slice().reverse().map(x=>`<div class="item"><div><b>${esc(x.nom)}</b><span class="mut">${x.date}</span></div><div class="row"><b>${fmt(x.m)}</b><button class="btn ghost sm noprint" aria-label="Supprimer" onclick="delDep('${x.id}')">✕</button></div></div>`).join(''):'<p class="empty">Aucune dépense. Notez le transport, le loyer, les sacs…</p>'}</div>
+ <h2>Ventes de la période</h2><div class="card">${b.vt.length?b.vt.slice().sort((a,c)=>c.ts-a.ts).slice(0,100).map(v=>`<div class="item"><div><b>${v.q} × ${esc(v.nom)}</b><span class="mut">${v.date}${v.client?' · crédit : '+esc(v.client):''}</span></div><div class="row"><b>${fmt(v.tot)}</b><button class="btn ghost sm noprint" aria-label="Reçu" onclick="recuId('${v.id}')">🧾</button><button class="btn ghost sm noprint" onclick="annuler('${v.id}')">Annuler</button></div></div>`).join('')+(b.vt.length>100?'<p class="mut" style="margin:.6rem 0 0">Les 100 plus récentes. Voir tout dans l’onglet Historique.</p>':''):'<p class="empty">Aucune vente sur cette période.</p>'}</div>`;
+}
+function yearStats(y){
+ const ys=String(y),M=[...Array(12)].map(()=>({ca:0,g:0,de:0,n:0})),vm=ix().vm;
+ LV().forEach(v=>{if(v.date.slice(0,4)!==ys)return;const m=M[+v.date.slice(5,7)-1];m.ca+=v.tot;m.n++;if(v.tot>0)m.g+=(v.prix-v.achat)*v.q*v.ac/v.tot});
+ S.paiements.forEach(p=>{const v=vm[p.vid];if(p.x||!v||v.x||!(v.tot>0)||p.date.slice(0,4)!==ys)return;M[+p.date.slice(5,7)-1].g+=(v.prix-v.achat)*v.q*p.m/v.tot});
+ S.dep.forEach(x=>{if(!x.x&&x.date.slice(0,4)===ys)M[+x.date.slice(5,7)-1].de+=x.m});
+ const T=M.reduce((a,m)=>({ca:a.ca+m.ca,g:a.g+m.g,de:a.de+m.de,n:a.n+m.n}),{ca:0,g:0,de:0,n:0});T.net=T.g-T.de;return{M,T}}
+function vAnnee(){
+ const {M,T}=yearStats(yr),P=yearStats(yr-1).T,cur=new Date().getFullYear();
+ const mx=Math.max(1,...M.map(m=>m.ca)),best=M.reduce((b,m,i)=>m.ca>M[b].ca?i:b,0);
+ const cmp=P.ca>0?`${T.ca>=P.ca?'▲':'▼'} ${Math.abs(Math.round((T.ca-P.ca)/P.ca*100))} % de ventes par rapport à ${yr-1}`:'';
+ const top=topProduits(LV().filter(v=>v.date.slice(0,4)===String(yr)));
+ const txt=`📅 Bilan ${yr} – ${B()}\nVentes : ${fmt(T.ca)}\nBénéfice encaissé : ${fmt(T.g)}\nDépenses : ${fmt(T.de)}\nBénéfice net : ${fmt(T.net)}`;
+ return perBar()+`<div class="ym noprint"><button class="btn ghost sm" aria-label="Année précédente" onclick="yr--;render()">◀</button><b>Bilan ${yr}</b><button class="btn ghost sm" aria-label="Année suivante" onclick="yr++;render()" ${yr>=cur?'disabled':''}>▶</button></div>
+ <div class="stats four"><div class="stat"><small>Ventes de l’année</small><b>${fmt(T.ca)}</b><small>${T.n} vente(s)${cmp?' · '+cmp:''}</small></div><div class="stat gain"><small>Bénéfice encaissé</small><b>${fmt(T.g)}</b></div><div class="stat"><small>Dépenses</small><b>${fmt(T.de)}</b></div><div class="stat ${T.net>=0?'due':'neg'}"><small>Bénéfice net</small><b>${fmt(T.net)}</b><small>bénéfice − dépenses</small></div></div>
+ <h2>Ventes mois par mois</h2><div class="card"><div class="bars an">${M.map((m,i)=>`<div title="${MOIS(i)} : ${fmt(m.ca)}"><i style="height:${m.ca/mx*100}%${T.ca>0&&i===best?';background:var(--mango)':''}"></i>${MOIS(i)[0]}</div>`).join('')}</div>${T.ca>0?`<p class="mut" style="margin:.6rem 0 0">Meilleur mois : <b>${MOIS(best)}</b> (${fmt(M[best].ca)})</p>`:''}</div>
+ <h2>Détail par mois</h2><div class="card">${M.some(m=>m.ca||m.de)?M.map((m,i)=>(m.ca||m.de)?`<div class="item"><div><b>${MOIS(i)}</b><span class="mut">Bénéfice ${fmt(m.g)} · dépenses ${fmt(m.de)}</span></div><div style="text-align:right;white-space:nowrap"><b>${fmt(m.ca)}</b><span class="${m.g-m.de>=0?'mut':'late'}">net ${fmt(m.g-m.de)}</span></div></div>`:'').join(''):'<p class="empty">Aucune donnée pour '+yr+'.</p>'}</div>
+ <h2>Produits les plus vendus en ${yr}</h2>${topHtml(top)}
+ <div class="row noprint" style="margin-top:.8rem"><a class="btn ghost sm" target="_blank" rel="noopener" href="${waurl('',txt)}">📤 Envoyer le bilan ${yr} par WhatsApp</a>${DEMO_MODE?'':'<button class="btn ghost sm" onclick="exportCSV('+yr+')">⬇️ Exporter les ventes '+yr+' (CSV)</button><button class="btn ghost sm" onclick="exportAn()">⬇️ Bilan mensuel (CSV)</button>'}</div>`;
+}
+function openDep(){
+ dlg.innerHTML=`<h3>Nouvelle dépense</h3><label class="fld">Nom (transport, loyer…)<input class="in" id="dn" type="text" maxlength="60"></label><label class="fld">Montant (FCFA)<input class="in" id="dm" type="number" inputmode="decimal" min="1"></label><p class="err" id="err" role="alert"></p>
+ <div class="row sp"><button class="btn ghost" onclick="dlg.close()">Annuler</button><button class="btn alt" onclick="saveDep()">Enregistrer</button></div>`;dlg.showModal();
+}
+function saveDep(){const nom=$('#dn').value.trim(),m=parseFloat($('#dm').value);if(!nom||!(m>0)){$('#err').textContent='Écrivez le nom et un montant supérieur à 0.';return}const now=Date.now();S.dep.push({id:uid(),date:day(),nom,m,u:now});save();dlg.close();toast('Dépense enregistrée');render()}
+function delDep(id){const x=S.dep.find(d=>d.id===id);if(x){x.x=true;x.u=Date.now();save();render();undoToast('Dépense supprimée','dep',id)}}
+function annuler(id){const v=S.ventes.find(x=>x.id===id);if(!v||!confirm('Annuler cette vente ? Le stock sera remis. Elle ira dans la corbeille : vous pourrez la récupérer.'))return;v.x=true;v.u=Date.now();save();render();undoToast('Vente annulée','ventes',id)}
+function annulerPay(id){const p=S.paiements.find(x=>x.id===id);if(!p||!confirm('Annuler ce paiement ? Le crédit du client augmentera de nouveau. Il ira dans la corbeille.'))return;p.x=true;p.u=Date.now();save();render();undoToast('Paiement annulé','paiements',id)}
+
+/* ---------- Exportation (CSV, s’ouvre dans Excel) ---------- */
+function dlCSV(name,rows){
+ const q=s=>'"'+String(s).replace(/"/g,'""')+'"',a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob(['﻿'+rows.map(r=>r.map(q).join(';')).join('\n')],{type:'text/csv'}));a.download=name;document.body.appendChild(a);a.click();a.remove();toast('Fichier téléchargé : '+name)}
+function exportCSV(scope){
+ let L=LV(),nom='ventes-'+day()+'.csv';
+ if(scope==='per'){const f=rng();L=L.filter(v=>v.date>=f);nom='ventes-'+PL[per].replace(/\W/g,'')+'-'+day()+'.csv'}
+ else if(typeof scope==='number'){L=L.filter(v=>v.date.slice(0,4)===String(scope));nom='ventes-'+scope+'.csv'}
+ const rows=[['Date','Produit','Quantité','Prix unitaire','Total','Bénéfice prévu','Client','Déjà payé','Reste à payer']];
+ L.sort((a,b)=>a.ts-b.ts).forEach(v=>{const p=paid(v);rows.push([v.date,v.nom,v.q,v.prix,v.tot,Math.round((v.prix-v.achat)*v.q),v.client,Math.round(p),Math.round(v.tot-p)])});
+ dlCSV(nom,rows)}
+function exportAn(){
+ const {M,T}=yearStats(yr),rows=[['Mois','Ventes','Bénéfice encaissé','Dépenses','Bénéfice net']];
+ M.forEach((m,i)=>rows.push([MOIS(i),Math.round(m.ca),Math.round(m.g),Math.round(m.de),Math.round(m.g-m.de)]));
+ rows.push(['Total '+yr,Math.round(T.ca),Math.round(T.g),Math.round(T.de),Math.round(T.net)]);dlCSV('bilan-'+yr+'.csv',rows)}
+function exportHist(){
+ const rows=[['Date','Type','Détail','Précision','Client','Montant (FCFA)']],T={v:'Vente',d:'Dépense',p:'Paiement de crédit',s:'Stock'};
+ hFiltered().forEach(e=>rows.push([e.date,T[e.t],e.ti,e.su,e.cl,e.t==='s'?'':Math.round(e.am)]));dlCSV('historique-'+day()+'.csv',rows)}
+
+/* ---------- Historique (toutes les années) ---------- */
+let H={t:'all',y:'all',m:'all',q:'',n:80};
+function hEntries(){
+ if(HC)return HC;
+ const vm=ix().vm,pm={},E=[];S.produits.forEach(p=>pm[p.id]=p);
+ LV().forEach(v=>E.push({t:'v',id:v.id,date:v.date,ts:v.ts,ic:'🛒',ti:v.q+' × '+v.nom,su:v.client?'à crédit':'comptant',cl:v.client||'',am:v.tot}));
+ S.dep.forEach(x=>{if(!x.x)E.push({t:'d',id:x.id,date:x.date,ts:x.u,ic:'💸',ti:x.nom,su:'dépense',cl:'',am:-x.m})});
+ S.paiements.forEach(p=>{const v=vm[p.vid];if(p.x||!v||v.x)return;E.push({t:'p',id:p.id,date:p.date,ts:p.ts,ic:'💰',ti:'Paiement de '+v.client,su:'sur '+v.q+' × '+v.nom,cl:v.client,am:p.m})});
+ S.mouv.forEach(m=>{if(m.x)return;const p=pm[m.pid];E.push({t:'s',id:m.id,date:m.date,ts:m.ts,ic:'📦',ti:(m.q>0?'+':'')+m.q+' '+(p?p.nom:'produit'),su:({init:'stock de départ',reappro:'réapprovisionnement',ajust:'ajustement'})[m.type]||'stock',cl:'',am:m.q})});
+ E.sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:(b.ts||0)-(a.ts||0));
+ return HC=E}
+function hYears(){const cur=new Date().getFullYear();let mn=cur;hEntries().forEach(e=>{const y=+e.date.slice(0,4);if(y<mn)mn=y});const a=[];for(let y=cur;y>=mn;y--)a.push(y);return a}
+function hFiltered(){const q=H.q.trim().toLowerCase();return hEntries().filter(e=>(H.t==='all'||e.t===H.t)&&(H.y==='all'||e.date.slice(0,4)===H.y)&&(H.m==='all'||e.date.slice(5,7)===H.m)&&(!q||(e.ti+' '+e.su+' '+e.cl).toLowerCase().includes(q)))}
+function hRow(e){
+ const am=e.t==='s'?`<span class="tag ${e.am<0?'low':''}">${e.am>0?'+':''}${e.am}</span>`:`<b>${e.t==='d'?'− ':''}${fmt(Math.abs(e.am))}</b>`;
+ const act=e.t==='v'?`<button class="btn ghost sm noprint" aria-label="Reçu" onclick="recuId('${e.id}')">🧾</button><button class="btn ghost sm noprint" onclick="annuler('${e.id}')">Annuler</button>`:e.t==='d'?`<button class="btn ghost sm noprint" aria-label="Supprimer" onclick="delDep('${e.id}')">✕</button>`:e.t==='p'?`<button class="btn ghost sm noprint" onclick="annulerPay('${e.id}')">Annuler</button>`:'';
+ return `<div class="item"><div><b>${e.ic} ${esc(e.ti)}</b><span class="mut">${fmtD(e.date)} · ${esc(e.su)}${e.t==='v'&&e.cl?' : '+esc(e.cl):''}</span></div><div class="row">${am}${act}</div></div>`}
+function hRes(){
+ const F=hFiltered(),sv=F.filter(e=>e.t==='v'),sd=F.filter(e=>e.t==='d'),sp=F.filter(e=>e.t==='p');
+ return `<div class="stats four" style="margin:.8rem 0"><div class="stat"><small>Ventes</small><b>${fmt(sum(sv,e=>e.am))}</b><small>${sv.length} vente(s)</small></div><div class="stat"><small>Crédits encaissés</small><b>${fmt(sum(sp,e=>e.am))}</b><small>${sp.length} paiement(s)</small></div><div class="stat"><small>Dépenses</small><b>${fmt(Math.abs(sum(sd,e=>e.am)))}</b><small>${sd.length} dépense(s)</small></div><div class="stat"><small>Lignes trouvées</small><b>${F.length}</b></div></div>
+ <div class="card">${F.length?F.slice(0,H.n).map(hRow).join(''):'<p class="empty">Rien ne correspond à ces filtres.</p>'}</div>${F.length>H.n?`<button class="btn ghost full" onclick="H.n+=80;hRefresh()">Voir plus (${F.length-H.n} restantes)</button>`:''}`}
+function hRefresh(){const e=$('#hres');if(e)e.innerHTML=hRes()}
+function vHist(){
+ const Y=hYears(),nt=trashItems().length;
+ return `<div class="row sp"><h2 style="margin:0">Historique</h2><button class="btn ghost sm" onclick="go('trash')">🗑️ Corbeille${nt?' ('+nt+')':''}</button></div>
+ <p class="mut">Toutes vos ventes, dépenses, paiements et entrées de stock, sur autant d’années que vous voulez.</p>
+ <input class="in" type="search" placeholder="🔎 Chercher un client, un produit…" value="${esc(H.q)}" oninput="H.q=this.value;H.n=80;hRefresh()" aria-label="Chercher">
+ <div class="row" style="margin:.6rem 0">${[['all','Tout'],['v','Ventes'],['d','Dépenses'],['p','Paiements'],['s','Stock']].map(c=>`<button class="btn ${H.t===c[0]?'':'ghost'} sm" onclick="H.t='${c[0]}';H.n=80;render()">${c[1]}</button>`).join('')}</div>
+ <div class="row"><select class="in" style="flex:1;margin:0" aria-label="Année" onchange="H.y=this.value;H.n=80;render()"><option value="all">Toutes les années</option>${Y.map(y=>`<option value="${y}" ${H.y==y?'selected':''}>${y}</option>`).join('')}</select>
+ <select class="in" style="flex:1;margin:0" aria-label="Mois" onchange="H.m=this.value;H.n=80;render()"><option value="all">Tous les mois</option>${[...Array(12)].map((_,i)=>{const v=String(i+1).padStart(2,'0');return `<option value="${v}" ${H.m===v?'selected':''}>${MOIS(i)}</option>`}).join('')}</select></div>
+ ${DEMO_MODE?'':'<div class="row noprint" style="margin-top:.6rem"><button class="btn ghost sm" onclick="exportHist()">⬇️ Exporter ces résultats (CSV)</button></div>'}
+ <div id="hres">${hRes()}</div>`}
+
+/* ---------- Corbeille ---------- */
+const TR={ventes:{ic:'🛒',n:'Vente',d:v=>v.q+' × '+v.nom+' · '+fmt(v.tot)+(v.client?' · '+v.client:'')+' · '+fmtD(v.date)},produits:{ic:'📦',n:'Produit',d:p=>p.nom+' · vente '+fmt(p.prix)},dep:{ic:'💸',n:'Dépense',d:x=>x.nom+' · '+fmt(x.m)+' · '+fmtD(x.date)},paiements:{ic:'💰',n:'Paiement',d:p=>{const v=ix().vm[p.vid];return fmt(p.m)+(v?' · '+v.client:'')+' · '+fmtD(p.date)}}};
+function trashItems(){const a=[];Object.keys(TR).forEach(c=>S[c].forEach(r=>{if(r.x&&!r.p)a.push({c,r})}));return a.sort((a,b)=>b.r.u-a.r.u)}
+function vTrash(){
+ const L=trashItems();
+ return `<div class="row sp"><h2 style="margin:0">🗑️ Corbeille</h2><button class="btn ghost sm" onclick="go('hist')">← Historique</button></div>
+ <p class="mut">Ce que vous annulez ou supprimez arrive ici. Touchez « Récupérer » pour le remettre : le stock et les crédits redeviennent comme avant.</p>
+ <div class="card">${L.length?L.map(({c,r})=>`<div class="item"><div><b>${TR[c].ic} ${TR[c].n}</b><span class="mut">${esc(TR[c].d(r))}</span><span class="mut" style="display:block">supprimé le ${new Date(r.u).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</span></div><div class="row"><button class="btn alt sm" onclick="restoreRec('${c}','${r.id}')">Récupérer</button><button class="btn ghost sm" aria-label="Supprimer pour toujours" onclick="purgeRec('${c}','${r.id}')">✕</button></div></div>`).join(''):'<p class="empty">La corbeille est vide.</p>'}</div>
+ ${L.length?'<button class="btn red full" onclick="emptyTrash()">Vider la corbeille</button><p class="mut">« Vider » efface définitivement : on ne peut plus rien récupérer.</p>':''}`}
+function restoreRec(c,id,quiet){
+ const r=S[c].find(x=>x.id===id);if(!r)return;
+ if(c==='ventes'&&!quiet&&stock(r.pid)-r.q<0&&!confirm('Le stock actuel est insuffisant pour cette vente (il passera sous zéro). Récupérer quand même ?'))return;
+ delete r.x;delete r.p;r.u=Date.now();save();render();toast('Récupéré ✅')}
+function purgeRec(c,id){const r=S[c].find(x=>x.id===id);if(!r||!confirm('Supprimer définitivement ? Il ne sera plus possible de le récupérer.'))return;r.p=true;r.x=true;r.u=Date.now();save();render()}
+function emptyTrash(){const L=trashItems();if(!L.length||!confirm('Vider la corbeille ('+L.length+' élément(s)) ? Il ne sera plus possible de les récupérer.'))return;const now=Date.now();L.forEach(({r})=>{r.p=true;r.u=now});save();render();toast('Corbeille vidée')}
+
+/* ---------- Paramètres ---------- */
+function vSet(){
+ const th=theme();
+ return `<h2 style="margin-top:0">Paramètres</h2><div class="card">
+ <label class="fld" style="margin-top:0">Nom du commerce<input class="in" id="nb" type="text" maxlength="60" value="${esc(B())}"></label>
+ <label class="fld">Votre nom<input class="in" id="ng" type="text" maxlength="60" value="${esc(S.cfg.gerante)}"></label>
+ <label class="fld">Téléphone du commerce (affiché sur les reçus)<input class="in" id="nt" type="tel" inputmode="tel" value="${esc(S.cfg.tel)}"></label>
+ <label class="fld">Alerte de stock bas : à partir de (quantité)<input class="in" id="ns" type="number" inputmode="numeric" min="0" value="${S.cfg.seuil}"></label>
+ <label class="fld">Rappel des crédits : relancer après (jours, 0 = désactivé)<input class="in" id="nr" type="number" inputmode="numeric" min="0" value="${S.cfg.rel}"></label>
+ <label class="fld">Objectif de ventes du mois (FCFA, facultatif)<input class="in" id="no" type="number" inputmode="decimal" min="0" value="${S.cfg.obj||''}"></label>
+ <p class="err" id="err" role="alert"></p><button class="btn alt full" style="margin-top:0" onclick="saveSet()">Enregistrer</button></div>
+ <h2>Notifications</h2><div class="card">${notifCard()}</div>
+ <h2>Apparence</h2><div class="card"><div class="row">${[['auto','🌓 Auto'],['light','☀️ Clair'],['dark','🌙 Sombre']].map(t=>`<button class="btn ${th===t[0]?'':'ghost'} sm" onclick="setTheme('${t[0]}')">${t[1]}</button>`).join('')}</div><p class="mut" style="margin:.6rem 0 0">Auto suit le réglage de votre téléphone ou ordinateur. Ce choix est propre à chaque appareil.</p></div>
+ <h2>Plusieurs appareils</h2><div class="card" id="synccard">${syncCard()}</div>
+ ${SUB?`<h2>Verrouillage</h2><div class="card">${pinCard()}</div>`:''}
+ <h2>Aide</h2><div class="card"><button class="btn ghost full" style="margin-top:0" onclick="guide(0)">📖 Revoir le guide d’utilisation</button><button class="btn ghost full" onclick="gCopy()">🔗 Copier le lien du guide</button></div>
+ <h2>Application</h2><div class="card">${standalone()?'<p class="mut" style="margin:0">✅ VENTEFACILE est installée sur cet appareil.</p>':installBtn('full')+'<p class="mut">Ajoute l’icône sur votre écran d’accueil ou votre bureau. Fonctionne aussi sans connexion.</p>'}</div>
+ ${DEMO_MODE?'':`<h2>Vos données</h2><div class="card"><p class="mut" style="margin-top:0">Téléchargez une copie de temps en temps. « Restaurer » fusionne le fichier avec les données de cet appareil : il sert aussi à copier un commerce d’un appareil à l’autre.</p><div class="row"><button class="btn ghost sm" onclick="exportD()">Télécharger mes données</button><label class="btn ghost sm" style="cursor:pointer">Restaurer<input type="file" accept=".json" hidden onchange="importD(this)"></label><button class="btn ghost sm" onclick="exportCSV()">Ventes (CSV)</button></div></div>`}
+ <h2>Corbeille</h2><div class="card"><p class="mut" style="margin-top:0">Ventes annulées, produits et dépenses supprimés : récupérez-les en cas d’erreur.</p><button class="btn ghost sm" onclick="go('trash')">🗑️ Ouvrir la corbeille (${trashItems().length})</button></div>
+ ${DEMO_MODE?'<h2>Démonstration</h2><div class="card"><button class="btn ghost full" style="margin-top:0" onclick="loadExamples()">Remplir avec des exemples</button></div>':''}
+ <h2>Votre avis</h2><div class="card"><button class="btn ghost full" style="margin-top:0" onclick="avisDlg()">⭐ Donner mon avis à NEWTON DESIGN</button></div>
+ <h2>Zone sensible</h2><div class="card"><button class="btn red full" style="margin-top:0" onclick="resetAll()">Effacer toutes les données de cet appareil</button></div>`;
+}
+function notifCard(){
+ const n='Notification' in window?Notification.permission:'none';
+ const t='<p class="mut" style="margin:0 0 .6rem">L’accueil vous montre chaque jour les clients à relancer. Vous pouvez aussi recevoir une notification à l’ouverture de l’application.</p>';
+ return t+(n==='granted'?'<p style="margin:0">✅ Notifications activées</p>':n==='denied'?'<p class="mut" style="margin:0">Notifications bloquées dans les réglages du navigateur.</p>':n==='default'?'<button class="btn ghost sm" onclick="notifOn()">🔔 Activer les notifications</button>':'<p class="mut" style="margin:0">Notifications non disponibles sur cet appareil.</p>')}
+function saveSet(){
+ const b=$('#nb').value.trim(),s=parseInt($('#ns').value),rl=parseInt($('#nr').value),ob=parseFloat($('#no').value)||0;
+ if(!b){$('#err').textContent='Le nom du commerce ne peut pas être vide.';return}
+ if(!(s>=0)){$('#err').textContent='Écrivez une quantité de 0 ou plus pour l’alerte de stock.';return}
+ if(!(rl>=0)){$('#err').textContent='Écrivez un nombre de jours (0 pour désactiver les rappels).';return}
+ S.cfg=Object.assign({},S.cfg,{boutique:b,gerante:$('#ng').value.trim(),tel:$('#nt').value.trim(),seuil:s,rel:rl,obj:ob,u:Date.now()});save();toast('Paramètres enregistrés');go('home');
+}
+function resetAll(){if(confirm('Effacer TOUTES les données de cet appareil ? Si la synchronisation est active, notez d’abord votre code pour les retrouver.')&&confirm('Dernière confirmation : tout effacer sur cet appareil ?')){S=NEW();KC=null;save(true);tab='home';render()}}
+function exportD(){lsSet('vf_bk',day());const d=JSON.parse(JSON.stringify(S));delete d.pin;delete d.sync;delete d.avisQ;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='ventefacile-sauvegarde-'+day()+'.json';a.click()}
+function importD(i){
+ const f=i.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{let d=JSON.parse(r.result);if(!d.produits)throw 0;if(!d.v||d.v<4)d=migrate3(d);d=fill(d);const inc={};COLL.forEach(c=>inc[c]=d[c]);const had=S.setup;mergeIn(inc,had?(d.cfg.u>S.cfg.u?d.cfg:null):d.cfg);S.setup=true;save();tab='home';render();toast('Données fusionnées')}catch(e){toast('Fichier non valide')}};
+ r.readAsText(f)}
+
+/* ---------- Fusion de données (utilisée par la synchronisation et la restauration) ---------- */
+function mergeIn(inc,cfgIn){
+ let ch=false;
+ COLL.forEach(c=>{const loc={};S[c].forEach(x=>loc[x.id]=x);(inc[c]||[]).forEach(r=>{const l=loc[r.id];if(!l){S[c].push(r);loc[r.id]=r;ch=true}else if(r.u>l.u||(r.u===l.u&&r.x&&!l.x)){Object.keys(l).forEach(k=>delete l[k]);Object.assign(l,r);ch=true}})});
+ if(cfgIn&&cfgIn.u>S.cfg.u){S.cfg=Object.assign({},S.cfg,cfgIn);ch=true}
+ if(ch){IX=null;HC=null}return ch}
+
+/* ---------- Synchronisation entre appareils (chiffrée de bout en bout) ---------- */
+const base=()=>((S&&S.sync.url)||SYNC_URL||'').replace(/\/+$/,'');
+const syncOn=()=>!!(S&&S.sync.code&&base()&&SUB);
+const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+const b64=u=>{let s='';u.forEach(c=>s+=String.fromCharCode(c));return btoa(s)};
+const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const normCode=c=>(c||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function genCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',r=new Uint8Array(12);crypto.getRandomValues(r);const s=[...r].map(x=>A[x%A.length]).join('');return s.slice(0,4)+'-'+s.slice(4,8)+'-'+s.slice(8)}
+async function getK(){
+ const c=normCode(S.sync.code);if(KC&&KC.c===c)return KC;const te=new TextEncoder();
+ const path=hex(await crypto.subtle.digest('SHA-256',te.encode('vf-path:'+c))).slice(0,32);
+ const km=await crypto.subtle.importKey('raw',te.encode(c),'PBKDF2',false,['deriveKey']);
+ const k=await crypto.subtle.deriveKey({name:'PBKDF2',salt:te.encode('ventefacile-v1'),iterations:100000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+ return KC={c,path,key:k}}
+async function seal(k,o){const iv=crypto.getRandomValues(new Uint8Array(12));const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,new TextEncoder().encode(JSON.stringify(o))));return b64(iv)+'.'+b64(ct)}
+async function unseal(k,s){const p=s.split('.');return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(p[0])},k,unb64(p[1]))))}
+async function syncNow(manual){
+ if(!syncOn())return;
+ for(let i=0;busy&&i<150;i++)await sleep(100);
+ if(busy)return;busy=true;S.sync.err='';
+ try{
+  const K=await getK(),u=base()+'/ventefacile/'+K.path+'.json';
+  const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw new Error('serveur '+r.status);
+  const R=(await r.json())||{},inc={};
+  for(const c of COLL){const o=R[c]||{},loc={};S[c].forEach(x=>loc[x.id]=x);inc[c]=[];
+   for(const id in o){const e=o[id],l=loc[id];if(!l||e.u>l.u||(e.u===l.u&&e.x&&!l.x)){try{inc[c].push(await unseal(K.key,e.d))}catch(x){}}}}
+  let cfgIn=null;if(R.cfg&&R.cfg.u>S.cfg.u){try{cfgIn=await unseal(K.key,R.cfg.d)}catch(x){}}
+  const ch=mergeIn(inc,cfgIn);if(!S.setup&&S.cfg.boutique)S.setup=true;
+  const patch={};let n=0;
+  for(const c of COLL){const o=R[c]||{};for(const x of S[c]){const e=o[x.id];if(!e||x.u>e.u||(x.u===e.u&&x.x&&!e.x)){patch[c+'/'+x.id]={u:x.u,x:x.x?1:0,d:await seal(K.key,x)};n++}}}
+  if(!R.cfg||S.cfg.u>R.cfg.u){patch.cfg={u:S.cfg.u,d:await seal(K.key,S.cfg)};n++}
+  if(n){const p=await fetch(u,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(patch)});if(!p.ok)throw new Error('serveur '+p.status)}
+  S.sync.last=Date.now();save(true);if(ch&&tab!=='set'&&S.setup)render();
+ }catch(e){S.sync.err=(e instanceof TypeError)?'hors connexion':String(e.message||e)}
+ busy=false;updChip();updSyncCard();flushAvis();
+}
+function schedSync(){clearTimeout(syncT);if(syncOn())syncT=setTimeout(syncNow,1500)}
+const chipTxt=()=>S.sync.err?'⚠️':'☁️';
+function updChip(){const c=$('#chip');if(c){c.textContent=chipTxt();c.title=syncText()}}
+function syncText(){if(!syncOn())return'';if(S.sync.err)return '⚠️ '+S.sync.err+' · nouvel essai automatique.';return S.sync.last?'✅ À jour · dernière synchronisation à '+new Date(S.sync.last).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'Synchronisation en cours…'}
+function updSyncCard(){const e=$('#syncst');if(e)e.textContent=syncText()}
+function syncCard(){
+ if(!SUB)return '<p class="mut" style="margin:0">La synchronisation demande une page sécurisée (https). Publiez l’application (voir GUIDE-HEBERGEMENT.txt).</p>';
+ if(syncOn())return `<p style="margin:0 0 .4rem"><b>Synchronisation activée</b></p><p class="mut" id="syncst" style="margin:0 0 .8rem">${syncText()}</p><div class="row"><button class="btn alt sm" onclick="syncNow(true)">🔄 Synchroniser</button><button class="btn ghost sm" onclick="showCode()">🔑 Voir le code</button><button class="btn ghost sm" onclick="syncStop()">Arrêter</button></div><p class="mut">Vos données sont chiffrées avant d’être envoyées. Sur l’autre appareil, choisissez « Rejoindre avec un code ».</p>`;
+ if(!base())return `<p class="mut" style="margin:0 0 .6rem">Utilisez le même commerce sur plusieurs téléphones ou ordinateurs. Il faut d’abord une adresse de serveur (voir GUIDE-SYNCHRONISATION.txt).</p><label class="fld">Adresse du serveur<input class="in" id="surl" type="url" placeholder="https://…" value="${esc(S.sync.url)}"></label><button class="btn ghost sm" onclick="saveUrl()">Enregistrer l’adresse</button><p class="mut">En attendant, copiez vos données d’un appareil à l’autre avec « Télécharger mes données » puis « Restaurer » : les deux appareils sont alors fusionnés.</p>`;
+ return `<p class="mut" style="margin:0 0 .8rem">Utilisez le même commerce sur plusieurs appareils : ventes, stocks et crédits restent à jour partout, même après un moment hors connexion.</p><div class="row"><button class="btn alt" onclick="syncEnable()">Activer sur cet appareil</button><button class="btn ghost" onclick="joinDlg()">Rejoindre avec un code</button></div>`;
+}
+function saveUrl(){const u=$('#surl').value.trim();if(u&&!/^https?:\/\//i.test(u)){toast('L’adresse doit commencer par https://');return}S.sync.url=u;save(true);render();toast('Adresse enregistrée')}
+async function syncEnable(){
+ if(!S.cfg.u)S.cfg.u=Date.now();
+ S.sync.code=genCode();S.sync.last=0;S.sync.err='';KC=null;save(true);toast('Activation…');
+ await syncNow(true);
+ if(S.sync.err||!S.sync.last){const e=S.sync.err||'échec';S.sync.code='';S.sync.err='';save(true);render();toast('Activation impossible : '+e);return}
+ render();showCode();
+}
+function showCode(){
+ const c=S.sync.code,link=location.href.split('#')[0];
+ dlg.innerHTML=`<h3>🔑 Votre code de commerce</h3><p class="mut">Entrez ce code sur vos autres appareils (« Rejoindre avec un code »). Gardez-le secret : il donne accès à vos données.</p><div class="code">${esc(c)}</div>
+ <div class="row sp"><button class="btn ghost" onclick="copyTxt('${c}','Code copié')">Copier</button><a class="btn alt" target="_blank" rel="noopener" href="${waurl('',`Mon code VENTEFACILE : ${c}\nOuvrez ${link} puis « Rejoindre avec un code ».`)}">Envoyer par WhatsApp</a></div><div class="row" style="justify-content:flex-end;margin-top:.8rem"><button class="btn ghost sm" onclick="dlg.close()">Fermer</button></div>`;
+ if(!dlg.open)dlg.showModal();
+}
+function copyTxt(t,m){try{navigator.clipboard.writeText(t).then(()=>toast(m)).catch(()=>prompt('Copiez :',t))}catch(e){prompt('Copiez :',t)}}
+function syncStop(){if(confirm('Arrêter la synchronisation sur cet appareil ? Vos données restent ici et sur le serveur.')){S.sync.code='';S.sync.last=0;S.sync.err='';KC=null;save(true);render();toast('Synchronisation arrêtée')}}
+function joinDlg(){
+ dlg.innerHTML=`<h3>🔑 Rejoindre mon commerce</h3><p class="mut">Entrez le code affiché sur votre autre appareil (Paramètres → Plusieurs appareils → Voir le code).</p>
+ <label class="fld">Code<input class="in pin" id="jc" type="text" autocomplete="off" autocapitalize="characters" maxlength="14" placeholder="XXXX-XXXX-XXXX"></label>
+ <p class="note">Si cet appareil contient déjà des ventes, elles seront ajoutées à celles du commerce, rien n’est supprimé.</p><p class="err" id="err" role="alert"></p>
+ <div class="row sp"><button class="btn ghost" onclick="dlg.close()">Annuler</button><button class="btn alt" onclick="joinGo()">Rejoindre</button></div>`;
+ dlg.showModal();
+}
+async function joinGo(){
+ const c=normCode($('#jc').value),err=$('#err');
+ if(c.length!==12){err.textContent='Le code a 12 caractères (lettres et chiffres).';return}
+ if(!base()){err.textContent='Adresse du serveur manquante (Paramètres).';return}
+ err.textContent='Connexion…';const prev=S.sync.code;S.sync.code=c;KC=null;
+ try{const K=await getK(),r=await fetch(base()+'/ventefacile/'+K.path+'/cfg.json',{cache:'no-store'});if(!r.ok)throw new Error('serveur '+r.status);if(!(await r.json()))throw new Error('Code introuvable. Vérifiez-le.')}
+ catch(e){S.sync.code=prev;KC=null;err.textContent=(e instanceof TypeError)?'Connexion impossible. Vérifiez internet.':String(e.message||e);return}
+ S.cfg.u=0;S.sync.last=0;S.sync.err='';save(true);dlg.close();toast('Récupération des données…');
+ await syncNow(true);
+ if(S.sync.err||!S.sync.last){const e=S.sync.err||'échec';S.sync.code='';S.sync.err='';save(true);render();toast('Échec : '+e);return}
+ S.setup=true;save(true);tab='home';render();toast('Commerce rejoint ✅');
+}
+setInterval(()=>{if(!document.hidden)syncNow()},20000);
+addEventListener('online',()=>{syncNow();flushAvis()});
+
+/* ---------- Avis envoyé à NEWTON DESIGN ---------- */
+function avisBtns(){
+ const b=[];if(base())b.push('<button class="btn alt" onclick="avisSend(\'cloud\')">Envoyer</button>');
+ if(CONTACT.email)b.push('<button class="btn '+(b.length?'ghost':'alt')+'" onclick="avisSend(\'mail\')">✉️ E-mail</button>');
+ if(CONTACT.whatsapp)b.push('<button class="btn '+(b.length?'ghost':'alt')+'" onclick="avisSend(\'wa\')">WhatsApp</button>');
+ if(!b.length)b.push('<button class="btn alt" onclick="avisSend(\'copy\')">Copier mon avis</button>');
+ return b.join('')}
+function avisDlg(){
+ stars=0;
+ dlg.innerHTML=`<h3>Votre avis compte</h3><p class="mut">Il est envoyé à NEWTON DESIGN pour améliorer VENTEFACILE.</p>
+ <div class="stars" id="stars" role="group" aria-label="Note sur 5">${[1,2,3,4,5].map(n=>`<button type="button" aria-label="${n} sur 5" onclick="setStars(${n})">☆</button>`).join('')}</div>
+ <label class="fld">Votre commentaire<textarea class="in" id="av" rows="4" maxlength="600" placeholder="Ce que vous aimez, ce qui manque…"></textarea></label>
+ <label class="fld">Votre nom ou téléphone (facultatif)<input class="in" id="avc" type="text" maxlength="60"></label>
+ <p class="err" id="err" role="alert"></p><div class="row sp"><button class="btn ghost" onclick="dlg.close()">Annuler</button><span class="row">${avisBtns()}</span></div>`;
+ dlg.showModal();
+}
+function setStars(n){stars=n;document.querySelectorAll('#stars button').forEach((b,i)=>b.textContent=i<n?'★':'☆')}
+async function avisSend(mode){
+ const texte=$('#av').value.trim(),contact=$('#avc').value.trim();
+ if(!stars&&!texte){$('#err').textContent='Donnez une note ou écrivez un commentaire.';return}
+ const d={id:uid(),ts:Date.now(),note:stars,texte,contact,ver:VER},txt=`Avis VENTEFACILE v${VER}\nNote : ${stars?stars+'/5':'—'}\n${texte}\n${contact?'Contact : '+contact:''}`;
+ if(mode==='mail'){location.href='mailto:'+CONTACT.email+'?subject='+encodeURIComponent('Avis VENTEFACILE')+'&body='+encodeURIComponent(txt);dlg.close();return}
+ if(mode==='wa'){window.open(waurl(CONTACT.whatsapp,txt),'_blank');dlg.close();return}
+ if(mode==='copy'){copyTxt(txt,'Avis copié, vous pouvez l’envoyer à NEWTON DESIGN');dlg.close();return}
+ dlg.close();S.avisQ.push(d);save(true);toast('Merci pour votre avis !');await flushAvis();
+}
+async function flushAvis(){
+ if(!S||!base()||!S.avisQ.length)return;
+ for(const d of S.avisQ.slice()){try{const r=await fetch(base()+'/avis/'+d.id+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});if(r.ok){S.avisQ=S.avisQ.filter(x=>x.id!==d.id);save(true)}else break}catch(e){break}}
+}
+
+/* ---------- Verrouillage par code PIN (propre à chaque appareil) ---------- */
+const hashPin=async p=>hex(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('vf-pin:'+p)));
+function pinCard(){
+ return S.pin?`<p style="margin:0 0 .6rem"><b>🔒 Code PIN activé</b></p><p class="mut" style="margin:0 0 .8rem">L’application demande le code à l’ouverture et après un moment d’absence.</p><button class="btn ghost sm" onclick="pinOff()">Désactiver</button>`
+ :`<p class="mut" style="margin:0 0 .6rem">Protégez l’accès à vos ventes avec un code à 4 chiffres, utile si le téléphone est prêté.</p><div class="row"><input class="in pin" id="pn1" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="max-width:9rem;margin:0"><button class="btn alt sm" onclick="pinSet()">Activer</button></div>`}
+async function pinSet(){const v=$('#pn1').value;if(!/^\d{4}$/.test(v)){toast('Le code PIN a 4 chiffres');return}S.pin=await hashPin(v);save(true);render();toast('Code PIN activé')}
+async function pinOff(){const v=prompt('Entrez votre code PIN actuel');if(v===null)return;if(await hashPin(v)===S.pin){S.pin='';save(true);render();toast('Code PIN désactivé')}else toast('Code incorrect')}
+function lockShow(){
+ if(!S||!S.pin||!SUB)return;const l=$('#lock');l.hidden=false;
+ l.innerHTML=`<div class="lk"><img src="icon.svg" alt=""><h2>${esc(B()||'VENTEFACILE')}</h2><p class="mut">Entrez votre code PIN</p><input class="in pin" id="pinin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" oninput="pinTry()" aria-label="Code PIN"><p class="err" id="perr" role="alert"></p><button class="btn ghost sm" onclick="pinForgot()">Code oublié ?</button></div>`;
+ setTimeout(()=>{const i=$('#pinin');if(i)i.focus()},60)}
+async function pinTry(){const i=$('#pinin');if(!i||i.value.length<4)return;if(await hashPin(i.value)===S.pin){$('#lock').hidden=true;$('#lock').innerHTML=''}else{$('#perr').textContent='Code incorrect.';i.value=''}}
+function pinForgot(){if(confirm('Pour débloquer, les données de CET appareil seront effacées. Si la synchronisation était activée, vous les retrouverez avec votre code de commerce. Continuer ?')){S=NEW();KC=null;save(true);$('#lock').hidden=true;$('#lock').innerHTML='';tab='home';render()}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden){hiddenAt=Date.now();flushSave()}else{if(S&&S.pin&&hiddenAt&&Date.now()-hiddenAt>60000)lockShow();syncNow();notifier()}});
+
+/* ---------- Guide d'utilisation (diaporama) ---------- */
+const GUIDE=[
+ {i:'guide/g1.jpg',t:'Bienvenue sur VENTEFACILE',p:['Votre cahier de commerce sur téléphone : ventes, stock, crédits clients et bénéfice.','Au début, donnez simplement le nom de votre commerce. Pas de compte à créer.']},
+ {i:'guide/g2.jpg',t:'1. Ajoutez vos produits',p:['Onglet <b>Produits</b>, puis <b>+ Nouveau produit</b>.','Écrivez le nom, le prix d’achat, le prix de vente et la quantité en stock. Le prix d’achat sert à calculer votre vrai bénéfice.','Quand un stock est bas, touchez <b>Liste à racheter</b> pour l’envoyer par WhatsApp à votre fournisseur.']},
+ {i:'guide/g3.jpg',t:'2. Faites une vente',p:['Onglet <b>Vendre</b>, puis touchez le produit.','Choisissez la quantité, changez le prix si vous négociez, puis <b>Comptant</b> ou <b>À crédit</b>. Pour un crédit, écrivez le nom du client et l’avance reçue.','Vous pouvez envoyer un reçu par WhatsApp.']},
+ {i:'guide/g4.jpg',t:'3. Crédits et rappels automatiques',p:['Onglet <b>Crédits</b> : qui vous doit combien, et depuis combien de temps. Touchez <b>Encaisser</b> quand un client paie, même une partie. Touchez un nom pour voir sa fiche et ajouter son numéro.','<b>Rappel automatique :</b> chaque jour, l’accueil affiche les clients à relancer (après 7 jours par défaut, réglable dans Paramètres). Touchez <b>Relancer</b> : le message WhatsApp est prêt, il suffit de l’envoyer.']},
+ {i:'guide/g5.jpg',t:'4. Connaissez votre vrai bénéfice',p:['Onglet <b>Bilan</b> : ventes, bénéfice encaissé, dépenses et bénéfice net sur 1, 7 ou 30 jours.','Notez vos dépenses (transport, loyer…). Un crédit non payé n’est pas encore compté dans le bénéfice.']},
+ {i:'guide/g6.jpg',t:'5. Le bilan de l’année',p:['Dans <b>Bilan</b>, touchez <b>Année</b> : ventes, bénéfice, dépenses et bénéfice net, mois par mois, avec le meilleur mois et la comparaison avec l’année précédente.','Changez d’année avec les flèches <b>◀ ▶</b>. Vous pouvez envoyer le bilan par WhatsApp.']},
+ {i:'guide/g7.jpg',t:'6. L’historique, sur 10 ans et plus',p:['Onglet <b>Historique</b> : toutes vos ventes, dépenses, paiements de crédit et entrées de stock, sans limite d’années.','Filtrez par type, année ou mois, ou cherchez un client ou un produit. Les données restent sur votre appareil, même après des années.']},
+ {i:'guide/g8.jpg',t:'7. La corbeille : tout récupérer',p:['Une vente annulée, une dépense ou un produit supprimé va dans la <b>Corbeille</b> (Historique → Corbeille, ou Paramètres).','Touchez <b>Récupérer</b> pour le remettre : le stock et les crédits redeviennent comme avant. Juste après une suppression, un bouton <b>Annuler</b> apparaît en bas de l’écran.','« Vider la corbeille » efface pour de bon.']},
+ {i:'guide/g9.jpg',t:'8. Exporter vos ventes',p:['<b>Bilan → Exporter les ventes (CSV)</b> : un fichier qui s’ouvre dans Excel ou Google Sheets (période choisie ou année).','<b>Historique → Exporter ces résultats</b> : exporte ce que vous avez filtré, par exemple toute l’année 2026.','<b>Paramètres → Télécharger mes données</b> : une copie complète à garder en sécurité.']},
+ {i:'guide/g10.jpg',t:'9. Plusieurs appareils',p:['Dans <b>Paramètres → Plusieurs appareils</b>, activez la synchronisation pour obtenir un <b>code de commerce</b>.','Sur l’autre téléphone ou ordinateur, choisissez <b>Rejoindre avec un code</b>. Vos données sont chiffrées et se mettent à jour partout.']},
+ {i:'guide/g11.jpg',t:'10. Les autres outils',p:['<b>Objectif du mois</b> avec barre de progression, <b>fiche client</b>, <b>code PIN</b>, <b>thème clair ou sombre</b>, <b>notifications</b> de rappel, rappel de <b>sauvegarde</b>.','Tout se règle dans <b>Paramètres</b>. Vous pouvez aussi donner votre avis à NEWTON DESIGN en bas de chaque page.']},
+ {i:'guide/g12.jpg',t:'11. Installez l’application',p:['Touchez <b>Installer l’application</b>. Sur iPhone : dans Safari, <b>Partager</b>, puis <b>Sur l’écran d’accueil</b>.','Elle marche ensuite sans internet.']}
+];
+let gi=0,gx0=null;
+function guide(i){gi=i||0;$('#guide').hidden=false;document.body.style.overflow='hidden';gRender()}
+function gRender(){
+ const s=GUIDE[gi],last=gi===GUIDE.length-1;
+ $('#guide').innerHTML=`<div class="gtop"><b>Guide · ${gi+1} / ${GUIDE.length}</b><button class="gx" onclick="gClose()">✕ Fermer</button></div>
+ <div class="gsl"><img src="${s.i}" alt="Capture d’écran : ${esc(s.t)}"><div class="gtx"><h2>${s.t}</h2>${s.p.map(x=>'<p>'+x+'</p>').join('')}${last?'<div style="margin-top:.9rem"><button class="btn alt sm" onclick="gCopy()">🔗 Copier le lien du guide</button></div>':''}</div></div>
+ <div class="gnav"><button class="gx" onclick="gGo(-1)" ${gi===0?'disabled':''}>← Précédent</button><div class="dots" aria-hidden="true">${GUIDE.map((_,k)=>`<i class="${k===gi?'on':''}"></i>`).join('')}</div><button class="btn alt" onclick="${last?'gClose()':'gGo(1)'}">${last?'Terminer':'Suivant →'}</button></div>`;
+ const sl=$('#guide .gsl');if(sl)sl.scrollTop=0;
+}
+function gGo(d){gi=Math.max(0,Math.min(GUIDE.length-1,gi+d));gRender()}
+function gClose(){
+ $('#guide').hidden=true;document.body.style.overflow='';
+ try{if(S){S.guideVu=true;save(true);render()}}catch(e){}
+ try{if(location.hash==='#guide')history.replaceState(null,'',location.pathname+location.search)}catch(e){}
+}
+function gCopy(){copyTxt(location.href.split('#')[0]+'#guide','Lien du guide copié')}
+addEventListener('keydown',e=>{if($('#guide').hidden)return;if(e.key==='ArrowRight')gGo(1);else if(e.key==='ArrowLeft')gGo(-1);else if(e.key==='Escape')gClose()});
+$('#guide').addEventListener('touchstart',e=>{gx0=e.touches[0].clientX},{passive:true});
+$('#guide').addEventListener('touchend',e=>{if(gx0===null)return;const d=e.changedTouches[0].clientX-gx0;gx0=null;if(d>70)gGo(-1);else if(d<-70)gGo(1)},{passive:true});
+addEventListener('hashchange',()=>{if(location.hash==='#guide')guide(0)});
+
+/* ---------- Exemples (démo uniquement) ---------- */
+function loadExamples(fromSetup){
+ if(!fromSetup&&(S.ventes.length||S.produits.length)&&!confirm('Remplacer vos données actuelles par des exemples ?'))return;
+ const d=NEW();Object.assign(d,{setup:true,cfg:Object.assign({},S.cfg,{obj:S.cfg.obj||250000,u:Date.now()}),dev:S.dev});
+ const ago=n=>{const t=new Date();t.setDate(t.getDate()-n);return day(t)},now=Date.now(),I=n=>'ex'+n;
+ const P=[[1,'Riz 25 kg',22500,25000,12],[2,'Huile 5 L',5200,6000,3],[3,'Savon',350,500,20],[4,'Sucre 1 kg',800,1000,4],[5,'Spaghetti',350,500,25]],sold={};
+ let k=0;const V=[];
+ const add=(n,pid,q,client,ac,x)=>{const p=P.find(y=>y[0]===pid),tot=q*p[3];if(!x)sold[pid]=(sold[pid]||0)+q;const v={id:'ev'+(k++),ts:0,date:ago(n),pid:I(pid),nom:p[1],q,prix:p[3],achat:p[2],tot,client:client||'',ac:client?ac:tot,u:now};if(x){v.x=true;v.u=now-3e5}V.push(v)};
+ [[900,3,15],[900,5,10],[800,1,2],[760,4,6],[700,3,12],[620,5,9],[560,1,3],[500,2,2],[470,4,5],[430,3,14],[400,1,2],[360,5,8],[330,2,3],[300,3,10],[270,4,6],[240,1,4],[210,5,7],[180,3,12],[150,2,2],[120,1,3],[95,4,5],[70,3,9],[50,5,6],[40,1,2],[30,2,2],[25,3,8]].forEach(a=>add(a[0],a[1],a[2]));
+ add(6,3,10);add(6,4,3);add(5,1,1);add(5,5,8);add(4,2,2);add(4,4,5);add(3,1,2);add(3,3,8);add(2,4,4);add(9,1,1,'Client exemple A',13000);add(1,2,3);add(1,3,12);add(0,1,1);add(0,3,5);add(0,2,2,'Client exemple B',0);add(0,5,6);add(0,4,2);
+ add(12,1,1,'Client exemple C',0);add(1,5,3,null,0,true);
+ P.forEach(p=>{d.produits.push({id:I(p[0]),nom:p[1],achat:p[2],prix:p[3],u:now});d.mouv.push({id:'em'+p[0],pid:I(p[0]),q:p[4]+(sold[p[0]]||0),type:'init',date:ago(920),ts:now-2e10,u:now})});
+ V.forEach((v,i)=>{v.ts=now-1e7+i*1000;d.ventes.push(v)});
+ d.tels.push({id:hexs('client exemple b'),k:'client exemple b',t:'677000000',u:now});
+ d.dep.push({id:'ed1',date:ago(2),nom:'Transport marchandises',m:3000,u:now},{id:'ed2',date:ago(0),nom:'Sacs d’emballage',m:500,u:now},{id:'ed3',date:ago(45),nom:'Loyer de la boutique',m:15000,u:now},{id:'ed4',date:ago(380),nom:'Loyer de la boutique',m:15000,u:now},{id:'ed5',date:ago(7),nom:'Dépense saisie par erreur',m:2000,x:true,u:now-2e5});
+ S=d;S.sync=NEW().sync;HC=null;save(true);tab='home';render();toast('Exemples chargés');
+}
+
+/* ---------- Démarrage ---------- */
+addEventListener('pagehide',()=>{flushSave()});
+(async function boot(){
+ applyTheme();
+ S=await loadAny();render();
+ if(S.pin)lockShow();
+ if(location.hash==='#guide')guide(0);
+ if(S.setup&&syncOn())setTimeout(syncNow,800);
+ setTimeout(flushAvis,1500);setTimeout(notifier,1500);
+ try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+ if(PWA&&'serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+VENTEFACILE - Gestion de commerce
+=================================
+Contenu du dossier
+ - index.html : l'application (vide, prête pour votre commerce)
+ - DEMO.html : même application avec un bouton "Essayer avec des exemples"
+ - manifest.json, sw.js, icônes : nécessaires à l'installation et au mode hors connexion
+ - guide/ : les 12 images du guide d'utilisation intégré à l'application
+ - serveur-sync/ et GUIDE-SYNCHRONISATION.txt : synchronisation multi-appareils et réception des avis
+ - GUIDE-HEBERGEMENT.txt : comment la publier pour qu'elle soit installable
+
+Utilisation rapide : double-cliquez sur index.html. À la première ouverture, saisissez le nom
+de votre commerce. Pour l'INSTALLER sur téléphone ou ordinateur, publiez d'abord le dossier
+(voir GUIDE-HEBERGEMENT.txt).
+
+Fonctions : nom du commerce personnalisé, ventes comptant ou à crédit (avec avance), prix négocié,
+reçu WhatsApp, produits et stock avec alerte, valeur du stock, crédits clients (encaissement
+partiel, relance WhatsApp), dépenses, bilan 1/7/30 jours, bénéfice net, produits les plus vendus,
+historique avec annulation, impression, sauvegarde et restauration, installation sur Android,
+iPhone, Windows, Mac, mode hors connexion.
+Les données restent sur l'appareil de l'utilisateur.
+
+Guide d'utilisation : bouton « Comment utiliser l'application ? » (première ouverture), carte « Nouveau ici ? »
+(accueil) et Paramètres. Lien direct à partager une fois l'application publiée : votre-adresse/index.html#guide
+
+
+NOUVEAUTÉS v4 : synchronisation chiffrée sur plusieurs appareils (code de commerce), thèmes Auto/Clair/Sombre,
+verrouillage par code PIN, export CSV, bilan WhatsApp, alertes crédits en retard, formulaire d'avis/commentaire
+vers NEWTON DESIGN, pied de page NEWTON DESIGN. Mise à jour de l'ancienne version : les données sont migrées.
+
+NOUVEAUTÉS v5 : rappel automatique des crédits à relancer (accueil + notification, message WhatsApp prêt), bilan annuel
+mois par mois, onglet Historique (ventes, dépenses, paiements, stock sur 10 ans et plus, filtres et recherche),
+corbeille avec récupération (et bouton Annuler juste après une suppression), exportation CSV (période, année,
+historique filtré, bilan mensuel), objectif de ventes du mois, liste à racheter (WhatsApp), fiche client avec numéro,
+rappel de sauvegarde, marge par produit. Les données sont stockées dans IndexedDB (très grand volume possible).
+Le guide intégré passe à 12 écrans et décrit toutes ces fonctions.

@@ -1,0 +1,30 @@
+PUBLIER VENTEFACILE SUR RENDER (application + synchronisation, gratuit)
+=======================================================================
+Render héberge l'application ET le serveur de synchronisation à la même adresse (https).
+Rien à saisir dans l'application : la synchronisation est déjà branchée.
+
+A. Mettre les fichiers sur GitHub (une seule fois)
+ 1. Créez un compte gratuit sur github.com, puis « New repository » (nom : ventefacile, Public ou Private).
+ 2. Sur la page du dépôt vide : « uploading an existing file ».
+ 3. Décompressez VENTEFACILE.zip, puis glissez TOUS les fichiers et dossiers (index.html, package.json,
+    serveur-sync, guide, icônes...) dans la page. Attention : package.json doit être à la racine, pas dans un sous-dossier.
+ 4. « Commit changes ».
+
+B. Créer le service sur Render
+ 1. render.com > Get Started > connectez-vous avec GitHub.
+ 2. New + > Web Service > choisissez le dépôt ventefacile.
+ 3. Réglages : Runtime = Node ; Build Command = laisser vide (ou « echo ok ») ; Start Command = npm start ; Instance = Free.
+ 4. Environment > ajoutez la variable CLE_ADMIN = un mot secret de votre choix (sert à lire les avis).
+ 5. « Create Web Service » et attendez « Live ». L'adresse ressemble à https://ventefacile-xxxx.onrender.com.
+
+C. Utiliser
+ - Ouvrez cette adresse sur chaque téléphone/ordinateur (et installez l'application).
+ - Appareil 1 : Paramètres > Plusieurs appareils > Activer > notez le code. Appareil 2 : « Rejoindre avec un code ».
+ - Les avis arrivent sur : https://votre-adresse.onrender.com/avis-recus?cle=VOTRE_MOT_SECRET
+
+Bon à savoir (offre gratuite)
+ - Le service s'endort après 15 minutes sans visite : la 1re ouverture prend environ 30 secondes, puis tout est rapide.
+ - Le disque gratuit est effacé à chaque redémarrage du service : le serveur ne garde alors plus les données, MAIS chaque appareil
+   garde sa copie complète et renvoie tout au serveur à la synchronisation suivante. Pour être tranquille, gardez au moins un
+   appareil à jour et faites de temps en temps « Télécharger mes données ».
+ - Pour un stockage durable, passez à un disque payant Render ou utilisez Firebase (GUIDE-SYNCHRONISATION.txt).

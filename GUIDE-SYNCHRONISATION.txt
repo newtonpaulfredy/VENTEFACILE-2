@@ -1,0 +1,35 @@
+SYNCHRONISER VENTEFACILE SUR PLUSIEURS APPAREILS (et recevoir les avis)
+======================================================================
+Principe : un « code de commerce » (12 caractères) est créé sur le 1er appareil. Les autres
+l'entrent pour rejoindre le même commerce. Les données sont CHIFFRÉES dans l'appareil avant
+l'envoi : le serveur ne voit jamais vos ventes. Les modifications faites hors connexion sont
+fusionnées au retour d'internet (rien n'est écrasé). Il faut une page en https.
+
+Il faut un petit serveur de stockage. Deux options gratuites :
+
+OPTION A - Firebase Realtime Database (recommandée, sans programmation)
+ 1. console.firebase.google.com > Ajouter un projet > Realtime Database > Créer (mode test).
+ 2. Onglet « Règles », collez puis Publier :
+    {"rules":{
+      "ventefacile":{"$code":{".read":true,".write":true}},
+      "avis":{"$id":{".write":true,".read":false}}
+    }}
+ 3. Copiez l'adresse de la base (ex. https://mon-projet-default-rtdb.firebaseio.com).
+ 4. Dans index.html, ligne « const SYNC_URL='' », collez l'adresse entre les guillemets.
+    (Ou, sans modifier le fichier : Paramètres > Plusieurs appareils > Adresse du serveur.)
+ 5. Republiez le dossier (voir GUIDE-HEBERGEMENT.txt).
+ Les avis arrivent dans Firebase > Realtime Database > nœud « avis ».
+
+OPTION B - Votre propre serveur (Node.js)
+ Dossier serveur-sync : « node server.js ». Il sert l'application ET la synchronisation.
+ Les avis se lisent sur  /avis-recus?cle=VOTRE_CLE  (définir CLE_ADMIN=votre_cle au lancement).
+ Hébergeable sur Render, Railway, un VPS... (https obligatoire sauf sur localhost).
+
+RECEVOIR LES AVIS PAR E-MAIL / WHATSAPP
+ Dans index.html : const CONTACT={email:'vous@exemple.com',whatsapp:'2376XXXXXXXX'};
+ Les boutons « Envoyer par e-mail / WhatsApp » apparaissent alors dans le formulaire d'avis.
+
+UTILISATION
+ Appareil 1 : Paramètres > Plusieurs appareils > Activer > noter le code.
+ Appareil 2 : ouvrir l'application > « Rejoindre mon commerce avec un code » > saisir le code.
+ Perdu le code ? Appareil 1 : Paramètres > Voir le code. Attention : qui a le code a accès aux données.

@@ -1,0 +1,19 @@
+VENTEFACILE - Publier l'application pour qu'elle soit installable
+-----------------------------------------------------------------
+Pourquoi ? Les navigateurs ne proposent "Installer l'application" que si le site est
+publié sur internet en https. Un fichier ouvert depuis le téléphone ou l'ordinateur
+fonctionne, mais ne s'installe pas.
+
+Option simple (gratuite) : Netlify Drop
+ 1. Allez sur app.netlify.com/drop avec un navigateur.
+ 2. Glissez le DOSSIER VENTEFACILE (décompressé) dans la page.
+ 3. Vous obtenez une adresse https. Envoyez-la à vos clients ou au jury.
+
+Autres options gratuites : GitHub Pages, Cloudflare Pages, Vercel (déposez les mêmes fichiers).
+
+Ensuite, sur chaque appareil :
+ - Android (Chrome) : bouton "Installer l'application" dans VENTEFACILE, ou menu ⋮ > Installer l'application.
+ - iPhone / iPad (Safari uniquement) : Partager > Sur l'écran d'accueil > Ajouter.
+ - Ordinateur (Chrome, Edge) : bouton "Installer l'application", ou icône d'installation dans la barre d'adresse.
+ - Mac (Safari) : Fichier > Ajouter au Dock.
+Une fois installée, l'application fonctionne aussi sans connexion.

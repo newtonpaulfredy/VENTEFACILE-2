@@ -2,6 +2,6 @@
  "name":"ventefacile",
  "version":"5.0.0",
  "private":true,
- "scripts":{"start":"node serveur-sync/server.js"},
+ "scripts":{"start":"node -e \"require('fs').existsSync('server.js')?require('./server.js'):require('./serveur-sync/server.js')\""},
  "engines":{"node":">=18"}
 }

@@ -1,7 +1,7 @@
 {
  "name":"ventefacile",
- "version":"5.0.0",
+ "version":"5.1.0",
  "private":true,
- "scripts":{"start":"node -e \"require('fs').existsSync('server.js')?require('./server.js'):require('./serveur-sync/server.js')\""},
+ "dependencies":{"@netlify/blobs":"*"},
  "engines":{"node":">=18"}
 }

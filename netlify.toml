@@ -1,4 +1,4 @@
 [build]
   publish = "."
-  command = "mkdir -p guide && (cp g*.jpg guide/ 2>/dev/null || true) && sed -i \"s#const SYNC_URL='[^']*';#const SYNC_URL=location.origin;#\" index.html"
+  command = "mkdir -p guide && (cp g*.jpg guide/ 2>/dev/null || true) && sed -i \"s#const SYNC_URL='[^']*';#const SYNC_URL=location.origin;#; s#^const base=.*#const base=()=>SYNC_URL;#\" index.html"
   functions = "netlify/functions"
